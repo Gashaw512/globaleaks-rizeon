@@ -1,69 +1,86 @@
 @if (submission) {
   @if (selectable_contexts.length && !submission.context) {
-    <div>
-      <src-context-selection (selectContext)="selectContext($event)" [selectable_contexts]=selectable_contexts [contextsOrderPredicate]=contextsOrderPredicate></src-context-selection>
+    <div class="container py-4 animate-fade-in">
+      <div class="card shadow-sm border-0 p-4 bg-white">
+        <src-context-selection (selectContext)="selectContext($event)" [selectable_contexts]=selectable_contexts [contextsOrderPredicate]=contextsOrderPredicate></src-context-selection>
+      </div>
     </div>
   }
+
   @if (submission.context) {
-    <div>
+    <div class="container py-3">
+      
       @if (appDataService.context_id || selectable_contexts.length > 1) {
-        <div>
-          <div class="title">{{submission.context.name}}</div>
-          <div class="row">
-            @if (submission.context.picture) {
+        <div class="mb-4 border-bottom pb-3">
+          <h4 class="fw-bold m-0" style="color: #222222;">{{submission.context.name}}</h4>
+          <p class="small m-0 text-muted font-monospace">Wegagen Bank Secure Intake Stream / የጥቆማ ማቅረቢያ መድረክ</p>
+          
+          @if (submission.context.picture) {
+            <div class="row mt-3">
               <div class="col-md-12">
-                <img class="context-image" alt="context picture" src="/s/{{submission.context.id}}" />
+                <img class="context-image rounded shadow-sm border img-fluid" alt="context picture" src="/s/{{submission.context.id}}" />
               </div>
-            }
-          </div>
+            </div>
+          }
         </div>
       }
+
       <form #submissionForm="ngForm" id="SubmissionForm" [ngClass]="{'was-validated': displaySubmissionErrors()}" autocomplete="off" novalidate>
-        <div class="tabbable tabs-below mb-3">
+        <div class="tabbable tabs-below mb-4">
+          
           @if (submission.context.show_steps_navigation_interface && questionnaire.steps.length > 1) {
-            <ul id="SubmissionTabsNavigationBox" class="nav nav-tabs" role="tablist">
+            <ul id="SubmissionTabsNavigationBox" class="nav nav-tabs border-bottom mb-4 flex-nowrap overflow-x-auto pb-1" role="tablist">
               @if (submission.context.allow_recipients_selection) {
                 <li id="step-recipient-selection-tab" class="nav-item" role="presentation">
-                  <button id="receiver-selection-link" [ngClass]="{active: navigation === -1}" class="nav-link nav-link-custom" (click)="goToStep(-1)" [attr.aria-selected]="navigation === -1" [attr.aria-current]="navigation === -1 ? 'step' : 'false'" aria-controls="step-recipient-selection" role="tab">
-                    <span class="step-index" [ngClass]="{'step-index-selected': navigation === -1}">1</span>
-                    <span class="step-label">{{'Recipient selection'|translate}}</span>
+                  <button id="receiver-selection-link" [ngClass]="{active: navigation === -1}" class="nav-link border-0 fw-bold px-3 py-2 text-nowrap rounded-top" (click)="goToStep(-1)" [attr.aria-selected]="navigation === -1" [attr.aria-current]="navigation === -1 ? 'step' : 'false'" aria-controls="step-recipient-selection" role="tab" [style.color]="navigation === -1 ? '#F58220' : '#333333'">
+                    <span class="badge me-2 text-white" [style.background-color]="navigation === -1 ? '#F58220' : '#222222'">1</span>
+                    {{'Recipient selection'|translate}}
                   </button>
                 </li>
               }
               @for (step of (questionnaire.steps | orderBy:'order'); let index = $index; track step.id) {
                 <li id="context-{{index}}" class="nav-item" role="presentation">
                   @if (step?.enabled) {
-                    <button id="step-{{index}}-link" [ngClass]="{active: navigation === index}" class="nav-link nav-link-custom" (click)="goToStep(index)" [attr.aria-selected]="navigation === index" [attr.aria-current]="navigation === index ? 'step' : 'false'" [attr.aria-controls]="'step-' + index" role="tab">
-                      <span class="step-index" [ngClass]="{'step-index-selected': navigation === index}">{{index + (submission.context.allow_recipients_selection ? 2 : 1)}}</span>
-                      <span class="step-label">{{step.label}}</span>
+                    <button id="step-{{index}}-link" [ngClass]="{active: navigation === index}" class="nav-link border-0 fw-bold px-3 py-2 text-nowrap rounded-top" (click)="goToStep(index)" [attr.aria-selected]="navigation === index" [attr.aria-current]="navigation === index ? 'step' : 'false'" [attr.aria-controls]="'step-' + index" role="tab" [style.color]="navigation === index ? '#F58220' : '#333333'">
+                      <span class="badge me-2 text-white" [style.background-color]="navigation === index ? '#F58220' : '#222222'">{{index + (submission.context.allow_recipients_selection ? 2 : 1)}}</span>
+                      {{step.label}}
                     </button>
                   }
                 </li>
               }
             </ul>
           }
-          <div id="SubmissionTabsContentBox" class="tab-content">
+
+          <div id="SubmissionTabsContentBox" class="tab-content min-vh-25 bg-white p-3 rounded-3 border shadow-sm" style="border-color: #222222 !important;">
             @if (validate[navigation] && !hasPreviousStepValue && !areReceiversSelectedValue) {
-              <div>
-                <div id="SubmissionErrors" class="alert alert-secondary mb-2" role="alert">
-                  <p>{{'You must select at least one recipient.'|translate}}</p>
+              <div class="animate-fade-in mb-3">
+                <div id="SubmissionErrors" class="alert alert-danger border-start border-4 border-danger bg-light d-flex align-items-center gap-2 p-3 text-dark rounded" role="alert">
+                  <i class="fas fa-circle-exclamation text-danger fs-5"></i>
+                  <div>
+                    <strong class="d-block text-danger mb-1">Selection Required / ምርጫ ያስፈልጋል</strong>
+                    <span class="small font-monospace text-secondary">
+                      {{'You must select at least one recipient.'|translate}} / እባክዎ ጥቆማው ለሚመለከተው የስራ ኃላፊ ወይም የቁጥጥር ክፍል ምልክት ያድርጉ።
+                    </span>
+                  </div>
                 </div>
               </div>
             }
+
             @if (submission.context.allow_recipients_selection && navigation === -1) {
-              <div id="step-receiver-selection" role="tabpanel" aria-labelledby="receiver-selection-link">
+              <div id="step-receiver-selection" role="tabpanel" aria-labelledby="receiver-selection-link" class="animate-fade-in">
                 <src-receiver-selection (switchSelection)="switchSelection($event)" [receiversOrderPredicate]="receiversOrderPredicate" [submission]="submission" [show_steps_navigation_bar]="show_steps_navigation_bar"></src-receiver-selection>
               </div>
             }
+
             @if (navigation !== -1) {
-              <div>
+              <div class="animate-fade-in">
                 @for (step of questionnaire.steps | orderBy:'order'; let index = $index; track $index) {
                   <div>
                     @if (step?.enabled) {
-                      <div id="step-{{index}}"  [class.d-none]="navigation !== index" role="tabpanel" [attr.aria-labelledby]="'step-' + index + '-link'">
+                      <div id="step-{{index}}" [class.d-none]="navigation !== index" role="tabpanel" [attr.aria-labelledby]="'step-' + index + '-link'">
                         <div ngForm #stepForm="ngForm" ngFormChanges (ngFormChange)="onFormChange()">
                           @if (step.description) {
-                            <markdown class="description" [data]="step.description | stripHtml"></markdown>
+                            <markdown class="description d-block border-bottom pb-2 mb-3 text-secondary small text-muted" [data]="step.description | stripHtml"></markdown>
                           }
                           <src-form (notifyFileUpload)="notifyFileUpload($event)" [fileUploadUrl]="'api/whistleblower/submission/attachment'" [uploads]="uploads" [displayErrors]="displayErrors()" [answers]="answers" [submission]="submission" [step]="step" [index]="index"></src-form>
                         </div>
@@ -75,25 +92,33 @@
             }
           </div>
         </div>
-        <div id="SubmissionButtons">
-          @if (hasPreviousStep()) {
-            <button id="PreviousStepButton" class="btn btn-outline-secondary" (click)="whistleblowerSubmissionService.decrementStep(this)">
-              <i class="fas fa-circle-arrow-left"></i>
-              <span>{{'Previous'|translate}}</span>
-            </button>
-          }
-          @if (hasNextStep()) {
-            <button id="NextStepButton" class="btn btn-outline-secondary" [disabled]="submission.blocked" (click)="whistleblowerSubmissionService.incrementStep(this)">
-              <span>{{'Next'|translate}}</span>
-              <i class="fas fa-circle-arrow-right"></i>
-            </button>
-          }
-          @if (!hasNextStep() && uploading()) {
-            <src-rfiles-upload-status [progress]="calculateProgress()" [estimatedTime]="calculateEstimatedTime()" [uploading]="uploading()"></src-rfiles-upload-status>
-          }
-          @if (!hasNextStep()) {
-            <button id="SubmitButton" class="btn btn-primary" (click)="completeSubmission()" [disabled]="!authenticationService.session || submission.blocked || done" type="submit">{{'Submit'|translate}}</button>
-          }
+
+        <div id="SubmissionButtons" class="d-flex align-items-center justify-content-between border-top pt-3 mt-4">
+          <div>
+            @if (hasPreviousStep()) {
+              <button id="PreviousStepButton" type="button" class="btn fw-semibold px-4 py-2 border shadow-sm transition-all text-dark bg-white" style="border-color: #222222;" (click)="whistleblowerSubmissionService.decrementStep(this)">
+                <i class="fas fa-chevron-left me-2 small"></i>{{'Previous'|translate}}
+              </button>
+            }
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            @if (hasNextStep()) {
+              <button id="NextStepButton" type="button" class="btn text-white fw-semibold px-4 py-2 transition-all border-0 shadow-sm" [disabled]="submission.blocked" [style.background-color]="'#222222'" (click)="whistleblowerSubmissionService.incrementStep(this)">
+                {{'Next'|translate}}<i class="fas fa-chevron-right ms-2 small"></i>
+              </button>
+            }
+            
+            @if (!hasNextStep() && uploading()) {
+              <src-rfiles-upload-status [progress]="calculateProgress()" [estimatedTime]="calculateEstimatedTime()" [uploading]="uploading()"></src-rfiles-upload-status>
+            }
+            
+            @if (!hasNextStep()) {
+              <button id="SubmitButton" class="btn text-white fw-bold px-5 py-2 transition-all border-0 shadow-sm" (click)="completeSubmission()" [disabled]="!authenticationService.session || submission.blocked || done" [style.background-color]="'#F58220'" type="submit">
+                <i class="fas fa-paper-plane me-2 small"></i>{{'Submit'|translate}} / አቅርብ
+              </button>
+            }
+          </div>
         </div>
       </form>
     </div>
