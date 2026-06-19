@@ -58,7 +58,7 @@ export class SubmissionComponent implements OnInit {
   context: Context | undefined = undefined;
   receiversOrderPredicate: string;
   validate: boolean[] = [];
-  score = 0; // Maintained for legacy calculations
+  score = 0;
   done: boolean;
   uploads: Record<string, any> = {};
   questionnaire: Questionnaire;
@@ -75,7 +75,7 @@ export class SubmissionComponent implements OnInit {
     this.receivedData = this.submission.getSharedData();
 
     this.appConfigService.setPage("submissionpage");
-    this.whistleblowerLoginResolver.resolve();
+    this.whistleblowerLoginResolver.resolve()
     this.resetForm();
   }
 
@@ -88,7 +88,7 @@ export class SubmissionComponent implements OnInit {
 
   firstStepIndex() {
     return this.submission.context.allow_recipients_selection ? -1 : 0;
-  }
+  };
 
   prepareSubmission(context: any) {
     this.done = false;
@@ -116,7 +116,7 @@ export class SubmissionComponent implements OnInit {
       return true;
     }
     return Object.keys(this.submission.selected_receivers).length < this.submission.context.maximum_selectable_receivers;
-  }
+  };
 
   switchSelection(receiver: Receiver) {
     if (receiver.forcefully_selected) {
@@ -128,7 +128,7 @@ export class SubmissionComponent implements OnInit {
     } else if (this.selectable()) {
       this.submission.selected_receivers[receiver.id] = true;
     }
-  }
+  };
 
   selectContext(context: Context) {
     this.prepareSubmission(context);
@@ -138,6 +138,9 @@ export class SubmissionComponent implements OnInit {
     this.selectable_contexts = this.appDataService.public.contexts.filter(context => !context.hidden);
 
     if (this.appDataService.context_id) {
+      // A context identifier addresses a specific context, possibly one that is
+      // hidden from the public listing. Resolve it on demand: knowledge of the
+      // identifier is the capability granting access to such contexts.
       this.appConfigService.loadContext(this.appDataService.context_id).subscribe(context => {
         if (context) {
           this.prepareSubmission(context);
@@ -178,12 +181,13 @@ export class SubmissionComponent implements OnInit {
     if (typeof this.context === "undefined") {
       return false;
     }
+
     return this.navigation > this.firstStepIndex();
-  }
+  };
 
   areReceiversSelected() {
     return Object.keys(this.submission.selected_receivers).length > 0 || Object.keys(this.submission.override_receivers).length > 0;
-  }
+  };
 
   hasNextStep() {
     return this.navigation < this.lastStepIndex();
@@ -192,14 +196,16 @@ export class SubmissionComponent implements OnInit {
   lastStepIndex() {
     let last_enabled = 0;
     if (this.questionnaire) {
+
       for (let i = 0; i < this.questionnaire.steps.length; i++) {
         if (this.fieldUtilitiesService.isFieldTriggered(null, this.questionnaire.steps[i], this.answers, this.submission.submission.identity_provided, false)) {
           last_enabled = i;
         }
       }
+
     }
     return last_enabled;
-  }
+  };
 
   uploading() {
     return this.done && this.utilsService.isUploading(this.uploads);
@@ -214,6 +220,7 @@ export class SubmissionComponent implements OnInit {
         }
       }
     }
+
     if (!isFinite(timeRemaining)) {
       timeRemaining = 0;
     }
@@ -245,11 +252,13 @@ export class SubmissionComponent implements OnInit {
     if (!(this.hasPreviousStepValue || !this.hasNextStepValue) && !this.areReceiversSelectedValue) {
       return true;
     }
-    return false;
+
+    return false
   }
 
   displayErrors() {
     this.updateStatusVariables();
+
     return this.validate[this.navigation];
   }
 
@@ -261,7 +270,7 @@ export class SubmissionComponent implements OnInit {
        });
     }
 
-    this.fieldUtilitiesService.onAnswersUpdate(this);
+   this.fieldUtilitiesService.onAnswersUpdate(this);
 
     if (!this.runValidation()) {
       this.utilsService.scrollToTop();
@@ -269,6 +278,7 @@ export class SubmissionComponent implements OnInit {
     }
 
     this.submission.submission.answers = this.answers;
+
     this.utilsService.resumeFileUploads(this.uploads);
     this.done = true;
 
@@ -276,18 +286,15 @@ export class SubmissionComponent implements OnInit {
       if (this.uploading()) {
         return;
       }
+
       clearInterval(intervalId);
+
       void this.finalizeSubmission();
     }, 1000);
   }
 
-private async finalizeSubmission() {
+  private async finalizeSubmission() {
     const receipt = this.cryptoService.generateReceipt();
-
-    // FIXED: Cast the value as the literal '0' to match the strict submissionResourceModel definition
-    if (this.submission && this.submission.submission) {
-      this.submission.submission.score = (this.score as 0);
-    }
 
     const res = await firstValueFrom(this.httpService.requestAuthType(JSON.stringify({'username': "" /* whistleblower */ })));
 
