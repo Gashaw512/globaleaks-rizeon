@@ -1,8 +1,8 @@
-import {Injectable, inject} from "@angular/core";
-import {AppDataService} from "@app/app-data.service";
-import {HttpService} from "@app/shared/services/http.service";
-import {Context} from "@app/models/receiver/receiver-tip-data";
-import {submissionResourceModel} from "@app/models/whistleblower/submission-resource";
+import { Injectable, inject } from "@angular/core";
+import { AppDataService } from "@app/app-data.service";
+import { HttpService } from "@app/shared/services/http.service";
+import { Context } from "@app/models/receiver/receiver-tip-data";
+import { submissionResourceModel } from "@app/models/whistleblower/submission-resource";
 
 @Injectable({
   providedIn: "root",
@@ -79,12 +79,23 @@ export class SubmissionService {
       this.submission.identity_provided = false;
     }
 
+    // const _submission_data = {
+    //   context_id: this.submission.context_id,
+    //   receivers: this.submission.receivers,
+    //   identity_provided: this.submission.identity_provided,
+    //   answers: this.submission.answers,
+    //   answer: this.submission.answer,
+    //   receipt: this.submission.receipt
+    // };
+
+
     const _submission_data = {
       context_id: this.submission.context_id,
       receivers: this.submission.receivers,
       identity_provided: this.submission.identity_provided,
       answers: this.submission.answers,
       answer: this.submission.answer,
+      score: this.submission.score,
       receipt: this.submission.receipt
     };
 
@@ -92,8 +103,8 @@ export class SubmissionService {
     return this.httpService.requestReportSubmission(param);
   }
 
-  setSharedData(data:Flow| null) {
-    if(data){
+  setSharedData(data: Flow | null) {
+    if (data) {
       this.sharedData.push(data);
     }
   }
