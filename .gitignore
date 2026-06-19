@@ -1,0 +1,40 @@
+# Python
+backend/env/
+__pycache__/
+*.pyc
+
+# Runtime data
+backend/workingdir/
+backend/0.0.0.0/
+
+# Node
+client/node_modules/
+
+# Angular cache
+client/.angular/
+
+# Build artifacts
+client/build/
+dist/
+build/
+
+# Documentation
+documentation/_build/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment
+.env
+
+# Logs
+*.log
+
+# Windows metadata
+*:Zone.Identifier
+
+# IDE
+.vscode/
+.idea/

@@ -1,0 +1,48 @@
+<div id="AdminHomepage" class="reveal container-fluid px-0">
+  <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav nav-tabs border-bottom-0">
+    
+    <li [ngbNavItem]="0">
+      <button ngbNavLink class="fw-semibold px-3">
+        <i class="fas fa-desktop me-2 text-primary"></i>{{ 'Home' | translate }}
+      </button>
+      <ng-template ngbNavContent>
+        <div class="tab-content pt-3">
+          <src-user-home></src-user-home>
+        </div>
+      </ng-template>
+    </li>
+    
+    <!-- <li [ngbNavItem]="1">
+      <button ngbNavLink [attr.data-cy]="'changelog'" class="px-3">
+        @if (nodeData?.update_available) {
+          <i class="fas fa-circle-exclamation text-warning me-1"></i>
+        }
+        <span>System Log Updates</span>
+      </button> -->
+      <!-- <ng-template ngbNavContent>
+        <div class="tab-content pt-3">
+          <div class="alert alert-light border small text-muted mb-3 py-2 px-3 rounded d-inline-flex align-items-center">
+            <i class="fas fa-code-branch me-2"></i><strong>Core Platform Version:</strong>&nbsp;{{ nodeData?.version }}
+          </div>
+          <div class="tos-text card p-3 font-monospace bg-light border-0 small text-secondary" style="max-height: 250px; overflow-y: auto;" tabindex="0" role="region" aria-label="System Updates Log">
+            {{ cleanChangelog }}
+          </div>
+        </div>
+      </ng-template>
+    </li> -->
+    
+    <!-- <li [ngbNavItem]="2">
+      <button ngbNavLink [attr.data-cy]="'license'" class="px-3">Compliance Terms</button>
+      <ng-template ngbNavContent>
+        <div class="tab-content pt-3">
+          <div class="tos-text card p-3 font-monospace bg-light border-0 small text-secondary" style="max-height: 250px; overflow-y: auto;" tabindex="0" role="region" aria-label="Platform Compliance Matrix">
+            {{ cleanLicense }}
+          </div>
+        </div>
+      </ng-template>
+    </li> -->
+    
+  </ul>
+  
+  <div [ngbNavOutlet]="nav" class="mt-1"></div>
+</div>

@@ -1,0 +1,40 @@
+[Unit]
+Description=GlobaLeaks Whistleblowing Software
+After=remote-fs.target
+After=network-online.target
+After=nss-lookup.target
+After=time-sync.target
+
+[Service]
+Type=simple
+User=globaleaks
+Group=globaleaks
+Restart=on-failure
+RestartPreventExitStatus=78
+TimeoutSec=5min
+KillMode=mixed
+
+EnvironmentFile=-/usr/share/globaleaks/default
+EnvironmentFile=-/etc/default/globaleaks
+
+ExecStartPre=+/etc/init.d/globaleaks firewall-start
+ExecStart=/etc/init.d/globaleaks exec
+ExecStopPost=+/etc/init.d/globaleaks firewall-stop
+
+RuntimeDirectory=globaleaks
+RuntimeDirectoryMode=0700
+
+MemorySwapMax=0
+NoNewPrivileges=yes
+SystemCallArchitectures=native
+LockPersonality=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+ReadWritePaths=/var/globaleaks
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

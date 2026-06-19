@@ -1,0 +1,826 @@
+import {EventEmitter, Injectable, inject} from "@angular/core";
+import Flow from "@flowjs/flow.js";
+import {TranslateService} from "@ngx-translate/core";
+import {ActivatedRoute, Router} from "@angular/router";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {RequestSupportComponent} from "@app/shared/modals/request-support/request-support.component";
+import {HttpService} from "@app/shared/services/http.service";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Observable, map} from "rxjs";
+import {ConfirmationWithPasswordComponent} from "@app/shared/modals/confirmation-with-password/confirmation-with-password.component";
+import {ConfirmationWith2faComponent} from "@app/shared/modals/confirmation-with2fa/confirmation-with2fa.component";
+import {PreferenceResolver} from "@app/shared/resolvers/preference.resolver";
+import {DeleteConfirmationComponent} from "@app/shared/modals/delete-confirmation/delete-confirmation.component";
+import {TlsConfig} from "@app/models/component-model/tls-confiq";
+import {nodeResolverModel} from "@app/models/resolvers/node-resolver-model";
+import {NewUser} from "@app/models/admin/new-user";
+import {userResolverModel} from "@app/models/resolvers/user-resolver-model";
+import {NewContext} from "@app/models/admin/new-context";
+import {contextResolverModel} from "@app/models/resolvers/context-resolver-model";
+import {notificationResolverModel} from "@app/models/resolvers/notification-resolver-model";
+import {questionnaireResolverModel} from "@app/models/resolvers/questionnaire-model";
+import {Field} from "@app/models/resolvers/field-template-model";
+import {rtipResolverModel} from "@app/models/resolvers/rtips-resolver-model";
+import {Option} from "@app/models/whistleblower/wb-tip-data";
+import {Status} from "@app/models/app/public-model";
+import {AppDataService} from "@app/app-data.service";
+import {AuthenticationService} from "@app/services/helper/authentication.service";
+import {FlowFile, FlowOptions} from "@flowjs/flow.js";
+import {AcceptAgreementComponent} from "@app/shared/modals/accept-agreement/accept-agreement.component";
+import {WbFile} from "@app/models/app/shared-public-model";
+import {FileViewComponent} from "@app/shared/modals/file-view/file-view.component";
+import {CryptoService} from "@app/shared/services/crypto.service";
+const datetime_never = new Date(3000, 0, 1).getTime();
+
+// Every real HTTP status (100..599): used as flow.js permanentErrors so that chunk
+// uploads are retried only on a dropped connection (XHR status 0, outside this range)
+// and never on an application reply.
+const HTTP_STATUS_CODES = Array.from({length: 500}, (_, i) => 100 + i);
+
+@Injectable({
+  providedIn: "root"
+})
+export class UtilsService {
+  private authenticationService = inject(AuthenticationService);
+  private activatedRoute = inject(ActivatedRoute);
+  private appDataService = inject(AppDataService);
+  private cryptoService = inject(CryptoService);
+  private translateService = inject(TranslateService);
+  private http = inject(HttpClient);
+  private httpService = inject(HttpService);
+  private modalService = inject(NgbModal);
+  private preferenceResolver = inject(PreferenceResolver);
+  private router = inject(Router);
+
+  supportedViewTypes = ["application/pdf", "audio/mpeg", "image/gif", "image/jpeg", "image/png", "text/csv", "text/plain", "video/mp4"];
+
+  updateNode(nodeResolverModel:nodeResolverModel) {
+    this.httpService.updateNodeResource(nodeResolverModel).subscribe();
+  }
+
+  routeGuardRedirect(route="login", skipChange = false){
+    const loginUrlWithParam = `/${route}?redirect=${encodeURIComponent(location.hash.substring(1))}`;
+    this.router.navigateByUrl(loginUrlWithParam, { skipLocationChange: skipChange }).then(() => {});
+  }
+
+  newItemOrder(objects: any[], key: string): number {
+    if (objects.length === 0) {
+      return 0;
+    }
+
+    let max = 0;
+    objects.forEach(object => {
+      if (object[key] > max) {
+        max = object[key];
+      }
+    });
+
+    return max + 1;
+  }
+
+  rolel10n(role: string) {
+    let ret = "";
+
+    if (role) {
+      ret = role === "receiver" ? "recipient" : role;
+      ret = ret.charAt(0).toUpperCase() + ret.slice(1);
+    }
+
+    return ret;
+  }
+
+  isUploading(uploads?: any) {
+    if (uploads) {
+      for (const key in uploads) {
+        const flow = uploads[key]?.flowJs ?? uploads[key];
+        // Gate on !isComplete() rather than flow.isUploading(): a chunk in a pending/reading
+        // state reports no upload in progress yet still hasn't reached the server (issue #4841).
+        if (flow && Array.isArray(flow.files) && flow.files.some((file: FlowFile) => !file.isComplete())) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  resumeFileUploads(uploads: any) {
+    if (uploads) {
+      for (const key in uploads) {
+        // Resolve the same way isUploading does: regular uploads expose the Flow under .flowJs,
+        // while the voice recorder stores a raw Flow directly. Without this fallback the voice
+        // upload is never started, yet isUploading still sees its files incomplete, leaving the
+        // additional-questionnaire submit stuck in the "uploading" state.
+        const flow = uploads[key]?.flowJs ?? uploads[key];
+        flow?.upload();
+      }
+    }
+  }
+
+  getDirection(language: string): string {
+    const rtlLanguages = ["ar", "dv", "fa", "fa_AF", "he", "ps", "ug", "ur"];
+    return rtlLanguages.includes(language) ? "rtl" : "ltr";
+  }
+
+  view(authenticationService: AuthenticationService, url: string, _: string, callback: (blob: Blob) => void): void {
+    const headers = new HttpHeaders({
+      "x-session": authenticationService.session.id
+    });
+
+    this.http.get(url, {
+      headers: headers,
+      responseType: "blob"
+    }).subscribe(
+      (response: Blob) => {
+        callback(response);
+      }
+    );
+  }
+
+  getCardSize(num: number) {
+    if (num < 2) {
+      return "col-md-12";
+    } else if (num === 2) {
+      return "col-md-6";
+    } else if (num === 3) {
+      return "col-md-4";
+    } else {
+      return "col-md-3 col-sm-6";
+    }
+  }
+
+  scrollToTop() {
+    document.documentElement.scrollTop = 0;
+  }
+
+  reloadCurrentRoute() {
+    const currentUrl = this.router.url;
+    this.router.navigateByUrl("blank", {skipLocationChange: true, replaceUrl: true}).then(() => {
+      this.router.navigate([currentUrl]).then();
+    });
+  }
+
+  reloadComponent() {
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+
+    const currentUrl = this.router.url + "?";
+
+    this.router.navigateByUrl(currentUrl)
+      .then(() => {
+        this.router.navigated = false;
+        this.router.navigate([this.router.url]).then();
+      });
+  }
+
+  onFlowUpload(flowJsInstance:Flow, file:File) {
+    const fileNameParts = file.name.split(".");
+    const fileExtension = fileNameParts.pop();
+    const fileNameWithoutExtension = fileNameParts.join(".");
+    const timestamp = new Date().getTime();
+    const fileNameWithTimestamp = `${fileNameWithoutExtension}.${fileExtension}`;
+    const modifiedFile = new File([file], fileNameWithTimestamp, {type: file.type});
+
+    flowJsInstance.addFile(modifiedFile);
+    flowJsInstance.upload();
+  }
+
+  swap($event: Event, index: number, n: number, questionnaire:questionnaireResolverModel): void {
+    $event.stopPropagation();
+
+    const target = index + n;
+    if (target < 0 || target >= questionnaire.steps.length) {
+      return;
+    }
+
+    [questionnaire.steps[index], questionnaire.steps[target]] =
+      [questionnaire.steps[target], questionnaire.steps[index]];
+
+    this.http.put("api/admin/steps", {
+      operation: "order_elements",
+      args: {
+        ids: questionnaire.steps.map((c: { id: string; }) => c.id),
+        questionnaire_id: questionnaire.id
+      },
+    }).subscribe();
+  }
+
+  toggleCfg(authenticationService: AuthenticationService, tlsConfig:TlsConfig, updated:EventEmitter<string>) {
+    if (tlsConfig.enabled) {
+      const authHeader = authenticationService.getHeader();
+      this.httpService.disableTLSConfig(tlsConfig, authHeader).subscribe(() => {
+        updated.emit();
+      });
+    } else {
+      const authHeader = authenticationService.getHeader();
+      this.httpService.enableTLSConfig(tlsConfig, authHeader).subscribe(() => {
+        window.location.href = "https://" + window.location.hostname + "/#/login";
+      });
+    }
+  }
+
+  reloadCurrentRouteFresh(removeQueryParam = false) {
+    let currentUrl = this.router.url;
+    if (removeQueryParam) {
+      currentUrl = this.router.url.split("?")[0];
+    }
+
+    this.router.navigateByUrl("/blank", {skipLocationChange: true}).then(() => {
+      this.router.navigateByUrl(currentUrl, {replaceUrl: true}).then();
+    });
+  }
+
+  showWBLoginBox() {
+    return this.appDataService.public.node.homepage === '/submission' ||
+        this.router.url.startsWith("/submission");
+  }
+
+  showUserStatusBox() {
+    return this.appDataService.public.node.wizard_done &&
+        this.appDataService.page !== "homepage" &&
+        this.appDataService.page !== "submissionpage" &&
+        this.authenticationService.session;
+  }
+
+  isWhistleblowerPage() {
+    const currentHash = location.hash;
+    return currentHash === "#/" || currentHash === "#/submission";
+  }
+
+  stopPropagation(event: Event) {
+    event.stopPropagation();
+  }
+
+  encodeString(string: string): string {
+    const codeUnits = Uint16Array.from(
+      {length: string.length},
+      (_, index) => string.charCodeAt(index)
+    );
+
+    const charCodes = new Uint8Array(codeUnits.buffer);
+
+    let result = "";
+    charCodes.forEach((char) => {
+      result += String.fromCharCode(char);
+    });
+
+    return btoa(result);
+  }
+
+  openSupportModal() {
+    if (this.appDataService.public.node.custom_support_url) {
+      window.open(this.appDataService.public.node.custom_support_url, "_blank");
+    } else {
+      this.modalService.open(RequestSupportComponent,{backdrop: "static", keyboard: false});
+    }
+  }
+
+  array_to_map(receivers: any) {
+    const ret: any = {};
+
+    receivers.forEach(function (element: any) {
+      ret[element.id] = element;
+    });
+
+    return ret;
+  }
+
+  copyToClipboard(data: string) {
+    navigator.clipboard.writeText(data);
+  }
+
+  getSubmissionStatusText(status: string,substatus:string, submission_statuses: Status[]) {
+    let text;
+    for (let i = 0; i < submission_statuses.length; i++) {
+      if (submission_statuses[i].id === status) {
+        text = submission_statuses[i].label ? this.translateService.instant(submission_statuses[i].label) : '';
+
+        const subStatus = submission_statuses[i].substatuses;
+        for (let j = 0; j < subStatus.length; j++) {
+          if (subStatus[j].id === substatus && subStatus[j].label) {
+            text += ' \u2013 ' + subStatus[j].label;
+            break;
+          }
+        }
+        break;
+      }
+    }
+    return text?text:"";
+  }
+
+  searchInObject(obj: any, searchTerm: string) {
+    try {
+        // Convert object to a string
+        const objString = JSON.stringify(obj);
+
+        // Create a regular expression for the search term with 'i' flag for case-insensitive search
+        const regex = new RegExp(String(searchTerm).trim(), 'i');
+
+        // Test if the search term is found in the object string
+        return regex.test(objString);
+    } catch (error) {
+        // Return false in case of any exception (e.g., cyclic reference or BigInt error)
+        return false;
+    }
+  }
+
+  isDatePassed(time: string) {
+    const report_date = new Date(time);
+    const current_date = new Date();
+    return current_date > report_date;
+  }
+
+  isNever(time: string) {
+    const date = new Date(time);
+    return date.getTime() >= datetime_never;
+  }
+
+  deleteFromList(list:  Record<string, Field>[], elem: Record<string, Field>) {
+    const idx = list.indexOf(elem);
+    if (idx !== -1) {
+      list.splice(idx, 1);
+    }
+  }
+
+  submitSupportRequest(arg: {mail_address: string,text: string} ) {
+    const param = JSON.stringify({
+      "mail_address": arg.mail_address,
+      "text": arg.text,
+      "url": window.location.href.replace("localhost", "127.0.0.1")
+    });
+    this.httpService.requestSupport(param).subscribe();
+  }
+
+  runUserOperation(operation: string, args: any, refresh: boolean) {
+    return this.httpService.runOperation("api/user/operations", operation, args, refresh);
+  }
+
+  runRecipientOperation(operation: string, args: {rtips:string[], receiver?: {id: number}}, refresh: boolean) {
+    return this.httpService.runOperation("api/recipient/operations", operation, args, refresh);
+  }
+
+  go(path: string): void {
+    this.router.navigateByUrl(path).then();
+  }
+
+  maskScore(score: number, translateService: TranslateService) {
+    if (score === 1) {
+      return translateService.instant("Low");
+    } else if (score === 2) {
+      return translateService.instant("Medium");
+    } else if (score === 3) {
+      return translateService.instant("High");
+    } else {
+      return translateService.instant("None");
+    }
+  }
+
+  getStaticFilter(data: any[], model:{id: number;label: string;}[], key: string, translateService: TranslateService): any[] {
+    if (model.length === 0) {
+      return data;
+    } else {
+      const rows: any[] = [];
+      data.forEach(data_row => {
+        model.forEach(selected_option => {
+          if (key === "score") {
+            const scoreLabel = this.maskScore(data_row[key], translateService);
+            if (scoreLabel === selected_option.label) {
+              rows.push(data_row);
+            }
+          } else if (key === "status") {
+            if (data_row[key] === selected_option.label) {
+              rows.push(data_row);
+            }
+          } else {
+            if (data_row[key] === selected_option.label) {
+              rows.push(data_row);
+            }
+          }
+        });
+      });
+      return rows;
+    }
+  }
+
+  getDateFilter(Tips: rtipResolverModel[], report_date_filter:[number, number] | null, update_date_filter: [number, number] | null, expiry_date_filter: [number, number] | null): rtipResolverModel[] {
+    const filteredTips: rtipResolverModel[] = [];
+    Tips.forEach(rows => {
+      const m_row_rdate = new Date(rows.last_access).getTime();
+      const m_row_udate = new Date(rows.update_date).getTime();
+      const m_row_edate = new Date(rows.expiration_date).getTime();
+
+      if (
+        (report_date_filter === null || (report_date_filter[0] === 0 || (m_row_rdate > report_date_filter[0] && m_row_rdate < report_date_filter[1]))) &&
+        (update_date_filter === null || (update_date_filter[0] === 0 || (m_row_udate > update_date_filter[0] && m_row_udate < update_date_filter[1]))) &&
+        (expiry_date_filter === null || (expiry_date_filter[0] === 0 || (m_row_edate > expiry_date_filter[0] && m_row_edate < expiry_date_filter[1])))
+      ) {
+        filteredTips.push(rows);
+      }
+    });
+
+    return filteredTips;
+  }
+
+  print() {
+    window.print();
+  }
+
+  saveBlobAs(filename:string,response:Blob){
+    const blob = new Blob([response], {type: "text/plain;charset=utf-8"});
+    const blobUrl = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = filename;
+    a.click();
+
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 1000);
+  }
+
+  saveAs(authenticationService: AuthenticationService, filename: any, url: string): void {
+    const headers = new HttpHeaders({
+      "X-Session": authenticationService.session.id
+    });
+
+    this.http.get(url, {responseType: "blob", headers: headers}).subscribe(
+      response => {
+        this.saveBlobAs(filename, response);
+      }
+    );
+  }
+
+  getMinPostponeDate(currentExpirationDate: string) {
+    const currDate = new Date(currentExpirationDate);
+    const minDate = new Date();
+    minDate.setDate(minDate.getDate() + 90);
+    return currDate > minDate ? minDate : currDate;
+  }
+
+  getPostponeDate(ttl: number): Date {
+    const date = new Date();
+    date.setDate(date.getDate() + ttl + 1);
+    date.setUTCHours(0, 0, 0, 0);
+    return date;
+  }
+
+  getMaxPostponeDate(ttl: number): Date {
+    if (ttl <= 0) {
+      return new Date(datetime_never);
+    } else {
+      return this.getPostponeDate(Math.max(365, ttl * 2));
+    }
+  }
+
+  update(node: nodeResolverModel) {
+    return this.httpService.requestUpdateAdminNodeResource(node);
+  }
+
+  AdminL10NResource(lang: string) {
+    return this.httpService.requestAdminL10NResource(lang);
+  }
+
+  updateAdminL10NResource(data: Record<string, string>, lang: string) {
+    return this.httpService.requestUpdateAdminL10NResource(data, lang);
+  }
+
+  DefaultL10NResource(lang: string) {
+    return this.httpService.requestDefaultL10NResource(lang);
+  }
+
+  runAdminOperation(operation: string, args: {value: string}|object, refresh: boolean) {
+    return this.runOperation("api/admin/config", operation, args, refresh);
+  }
+
+  deleteDialog() {
+    return this.openConfirmableModalDialogReport("", "").subscribe();
+  }
+
+
+  runOperation(api: string, operation: string, args?: {value: string}|object, refresh?: boolean): Observable<any> {
+    const requireConfirmation = [
+      "enable_encryption",
+      "disable_2fa",
+      "get_recovery_key",
+      "toggle_escrow",
+      "toggle_user_escrow",
+      "enable_user_permission_file_upload",
+      "reset_submissions"
+    ];
+
+    if (!args) {
+      args = {};
+    }
+
+    if (!refresh) {
+      refresh = false;
+    }
+
+    if (requireConfirmation.indexOf(operation) !== -1) {
+      return new Observable((observer) => {
+        this.getConfirmation().subscribe((secret: string) => {
+          const headers = new HttpHeaders({"X-Confirmation": this.encodeString(secret)});
+
+          this.http.put(api, {"operation": operation, "args": args}, {headers}).subscribe(  {
+              next: (response) => {
+                if (refresh) {
+                  this.reloadComponent();
+                }
+                observer.next(response)
+              },
+              error: (error) => {
+                observer.error(error);
+              }
+            }
+          )
+        });
+      });
+    } else {
+      return this.http.put(api, {"operation": operation, "args": args}).pipe(
+        map((response) => {
+          if (refresh) {
+            this.reloadComponent();
+          }
+          return response;
+        })
+      );
+    }
+  }
+
+  getConfirmation(): Observable<string> {
+    return new Observable((observer) => {
+      let modalRef;
+
+      if (this.preferenceResolver.dataModel.two_factor) {
+        modalRef = this.modalService.open(ConfirmationWith2faComponent,{backdrop: "static", keyboard: false, ariaLabelledBy: 'modal-title'});
+      } else {
+        modalRef = this.modalService.open(ConfirmationWithPasswordComponent,{backdrop: "static", keyboard: false, ariaLabelledBy: 'modal-title'});
+      }
+
+      modalRef.componentInstance.confirmFunction = (secret: string) => {
+        observer.next(secret);
+        observer.complete();
+      };
+    });
+  }
+
+  openConfirmableModalDialogReport(arg: string, scope: any): Observable<string> {
+    scope = !scope ? this : scope;
+    return new Observable((observer) => {
+      const modalRef = this.modalService.open(DeleteConfirmationComponent,{backdrop: "static", keyboard: false, ariaLabelledBy: 'modal-title'});
+      modalRef.componentInstance.arg = arg;
+      modalRef.componentInstance.scope = scope;
+      modalRef.componentInstance.confirmFunction = () => {
+        observer.complete()
+        this.openPasswordConfirmableDialog(arg, scope);
+      };
+    });
+  }
+
+  openPasswordConfirmableDialog(arg: string, scope: any){
+    return this.runAdminOperation("reset_submissions", {}, true).subscribe({
+      next: (_) => {
+      },
+      error: (_) => {
+        this.openPasswordConfirmableDialog(arg, scope)
+      }
+    });
+  }
+
+  getFiles(): Observable<FlowFile[]> {
+    return this.http.get<FlowFile[]>("api/admin/files");
+  }
+
+  deleteFile(url: string): Observable<void> {
+    return this.http.delete<void>(url);
+  }
+
+  deleteAdminUser(user_id: string) {
+    return this.httpService.requestDeleteAdminUser(user_id);
+  }
+
+  deleteAdminContext(user_id: string) {
+    return this.httpService.requestDeleteAdminContext(user_id);
+  }
+
+  deleteStatus(url: string) {
+    return this.httpService.requestDeleteStatus(url);
+  }
+
+  deleteSubStatus(url: string) {
+    return this.httpService.requestDeleteStatus(url);
+  }
+
+  addAdminUser(user: NewUser) {
+    return this.httpService.requestAddAdminUser(user);
+  }
+
+  updateAdminUser(id: string, user: userResolverModel) {
+    return this.httpService.requestUpdateAdminUser(id, user);
+  }
+
+  addAdminContext(context: NewContext) {
+    return this.httpService.requestAddAdminContext(context);
+  }
+
+  updateAdminContext(context: contextResolverModel, id: string) {
+    return this.httpService.requestUpdateAdminContext(context, id);
+  }
+
+  updateAdminNotification(notification: notificationResolverModel) {
+    return this.httpService.requestUpdateAdminNotification(notification);
+  }
+
+  readFileAsText(file: File): Observable<string> {
+    return new Observable<string>((observer) => {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        if (event.target) {
+          observer.next(event.target.result as string);
+          observer.complete();
+        } else {
+          observer.error(new Error("Event target is null."));
+        }
+      };
+
+      reader.onerror = (error) => {
+        observer.error(error);
+      };
+
+      reader.readAsText(file);
+    });
+  }
+
+  moveUp(elem: any): void {
+    elem[this.getYOrderProperty(elem)] -= 1;
+  }
+
+  moveDown(elem: any): void {
+    elem[this.getYOrderProperty(elem)] += 1;
+  }
+
+  moveLeft(elem: any): void {
+    elem[this.getXOrderProperty(elem)] -= 1;
+  }
+
+  moveRight(elem: any): void {
+    elem[this.getXOrderProperty(elem)] += 1;
+  }
+
+  getXOrderProperty(_: Option[]): string {
+    return "x";
+  }
+
+  getYOrderProperty(elem: Option): keyof Option {
+    return ("order" in elem ? "order" : "y") as keyof Option;
+  }
+
+  assignUniqueOrderIndex(elements: Option[]): void {
+    if (elements.length <= 0) {
+        return;
+    }
+
+    const key: keyof Option = this.getYOrderProperty(elements[0]) as keyof Option;
+    if (elements.length) {
+        let i = 0;
+        elements = elements.sort((a, b) => (a[key] as number) - (b[key] as number));
+        elements.forEach((element) => {
+            (element[key] as number) = i;
+            i += 1;
+        });
+    }
+  }
+
+  deleteResource<T extends { id: string }>(list: T[], id: string): T[] {
+    return list.filter(i => i.id !== id);
+  }
+
+  acceptPrivacyPolicyDialog(): Observable<string> {
+    return new Observable((observer) => {
+      const modalRef = this.modalService.open(AcceptAgreementComponent, {
+        backdrop: 'static',
+        keyboard: false,
+      });
+      modalRef.componentInstance.confirmFunction = () => {
+        observer.complete()
+        return this.http.put("api/user/operations", {
+          operation: "accepted_privacy_policy",
+          args: {}
+        }).subscribe(() => {
+          this.preferenceResolver.dataModel.accepted_privacy_policy = "";
+          modalRef.close();
+        });
+      };
+    });
+  }
+
+  generateCSV(fileName: string, data: Record<string, any>[], headerx?: string[]): void {
+    if (!Array.isArray(data)) {
+      console.error('Invalid data format');
+      return;
+    }
+
+    const headers = headerx ?? Object.keys(data[0] || {});
+    const headerLine = headers.join(',');
+
+    const csvRows = data.map(row =>
+      headers.map(header => {
+        let cell = row[header];
+
+        // If it's an object or array, stringify it
+        if (typeof cell === 'object' && cell !== null) {
+          cell = JSON.stringify(cell);
+        }
+
+        if (typeof cell === 'string') {
+          // Neutralize spreadsheet formula injection by prefixing values that
+          // a spreadsheet would otherwise interpret as a formula
+          if (/^[=+\-@\t\r]/.test(cell)) {
+            cell = "'" + cell;
+          }
+
+          // Escape commas, quotes, and newlines
+          if (cell.includes(',') || cell.includes('"') || cell.includes('\n')) {
+            return `"${cell.replace(/"/g, '""')}"`;
+          }
+        }
+
+        return cell ?? ''; // Fallback to empty string
+      }).join(',')
+    );
+
+    const csvContent = `${headerLine}\n${csvRows.join('\n')}`;
+
+    if (!csvContent.trim()) {
+      console.warn('No data to export');
+      return;
+    }
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = `${fileName}.csv`;
+    link.click();
+  }
+
+  public viewRFile(file: WbFile) {
+    const modalRef = this.modalService.open(FileViewComponent, {backdrop: 'static', keyboard: false, ariaLabelledBy: 'modal-title'});
+    modalRef.componentInstance.args = {
+      file: file,
+      loaded: false,
+      iframeHeight: window.innerHeight * 0.75
+    };
+  }
+
+  public downloadRFile(file: WbFile) {
+    const param = JSON.stringify({});
+    this.httpService.requestToken(param).subscribe
+    (
+      {
+        next: async token => {
+          this.cryptoService.proofOfWork(token).subscribe(
+              (ans) => {
+               const url = this.authenticationService.session.role === "whistleblower"?"api/whistleblower/wbtip/wbfiles/":"api/recipient/wbfiles/";
+                window.open(url + file.id + "?token=" + token.id + ":" + ans);
+                this.appDataService.updateShowLoadingPanel(false);
+              }
+          );
+        }
+      }
+    );
+  }
+
+  public getFlowOptions(): FlowOptions {
+    return {
+      chunkSize: 1000 * 1024,
+      forceChunkSize: true,
+      simultaneousUploads: 1,
+      testChunks: false,
+      // Retry chunks only when the connection itself is interrupted, never on an
+      // application response. Any real HTTP reply has a status in 100..599; a dropped
+      // connection surfaces as XHR status 0. Listing the whole HTTP range as permanent
+      // makes every server reply terminal (fail fast: a 403 rate-limit, a 413 too-big and
+      // the like are not retried), while status 0 stays retryable. The backend writes each
+      // chunk at most once, so a re-sent chunk is safe. successStatuses is evaluated before
+      // permanentErrors, so 2xx replies still count as success.
+      permanentErrors: HTTP_STATUS_CODES,
+      maxChunkRetries: 5,
+      chunkRetryInterval: 2000,
+      speedSmoothingFactor:0.01,
+      allowDuplicateUploads:false,
+      singleFile:false,
+      generateUniqueIdentifier:() => {
+        return crypto.randomUUID();
+      },
+      headers:() => {
+        return {"X-Session": this.authenticationService.session.id};
+      }
+    };
+  }
+
+  public getFlowInstance(): Flow {
+    return new Flow(this.getFlowOptions());
+  }
+}

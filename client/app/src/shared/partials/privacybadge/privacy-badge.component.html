@@ -1,0 +1,63 @@
+<!-- @if (!appDataService.connection.tor) {
+  <div>
+    <div id="PrivacyBadge">
+      @if (!appDataService.public.node.enable_custom_privacy_badge) {
+        <div>
+          <div id="PrivacyBadgeTextBox">
+            <span class="badge badge-warning-custom text-bg-warning">
+              <i class="fas fa-circle-exclamation"></i>
+              <span>{{'Warning'|translate}}</span>
+            </span>
+            <div>
+              <div id="PrivacyBadgeText">{{'You are strongly advised to visit this site using the app called Tor Browser, that protects your identity.'|translate}}</div>
+            </div>
+            <div>
+              <a class="btn btn-sm btn-secondary" href="https://www.torproject.org/download/" target="_blank">
+                <i class="fas fa-download"></i><span>{{'Download the Tor Browser'|translate}}</span>
+              </a>
+            </div>
+            @if (appDataService.public.node.onionservice) {
+              <div>
+                <span>
+                  {{'Then, copy and paste the following address into the Tor Browser:'|translate}}
+                </span>
+                <span (click)="utilsService.copyToClipboard(appDataService.public.node.onionservice); utilsService.stopPropagation($event)" class="onion-address" ngbTooltip="{{'Copy to clipboard' | translate}}">{{appDataService.public.node.onionservice}}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+      <div class="d-none"></div>
+      @if (appDataService.public.node.enable_custom_privacy_badge) {
+        <div>
+          <div id="PrivacyBoxTextBox">
+            <markdown id="PrivacyBadgeCustomText" [data]="markdown | stripHtml" class="variable-binding"></markdown>
+          </div>
+        </div>
+
+        <div class="d-none"></div>
+      }
+    </div>
+  </div>
+} -->
+
+
+@if (!appDataService.connection.tor) {
+  <div id="PrivacyBadge" class="bg-dark text-white p-2 mb-3 rounded shadow-sm" style="border-left: 4px solid #00c853; font-size: 0.85rem;">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 px-1">
+      
+      <div id="PrivacyBadgeTextBox" class="flex-grow-1">
+        <span class="text-success fw-bold"><i class="fas fa-user-shield me-1"></i> Safe & Confidential:</span>
+        <span>Your identity is completely protected. This portal ensures your submission remains private.</span>
+        <span class="text-white-50 ms-2 font-monospace d-block d-lg-inline border-lg-start border-secondary ps-lg-2">/ ምስጢርዎ የተጠበቀ ነው፡ ማንነትዎ ሳይገለጽ መልዕክትዎን መላክ ይችላሉ።</span>
+      </div>
+
+      <div>
+        <a class="btn btn-xs btn-outline-light py-0 px-2 fw-semibold" style="font-size: 0.75rem;" href="https://www.torproject.org/download/" target="_blank">
+          Maximize Privacy / ቶርን ያውርዱ
+        </a>
+      </div>
+
+    </div>
+  </div>
+}

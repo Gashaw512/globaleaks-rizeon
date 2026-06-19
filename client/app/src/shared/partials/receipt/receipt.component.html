@@ -1,0 +1,39 @@
+
+<div class="text-center mb-4">
+  <div class="d-inline-flex align-items-center justify-content-center p-2 mb-2 rounded-circle"
+       style="background-color: #F58220; color: #FFFFFF;">
+    <i class="fas fa-folder-open fs-5"></i>
+  </div>
+
+  <h5 class="fw-bold m-0" style="color: #222222;">
+    {{ 'Check Your Report Status / ሪፖርትዎን ይመልከቱ' | translate }}
+  </h5>
+
+  <p class="mt-2 mb-0" style="color: #333333;">
+    {{ 'Already submitted a report? Enter your receipt code to view its status.' | translate }}
+  </p>
+</div>
+
+<form id="WhistleblowerLoginForm" autocomplete="off" novalidate>
+  <div>
+    <label id="WhistleblowerLoginQuestion" for="receipt-input">
+      {{'Have you already submitted a report? Enter your access code.'|translate}}
+    </label>
+  </div>
+  <div class="form-group d-block mx-auto">
+    <div class="input-group">
+      <input class="d-none" type="password" name="disable-autocomplete" />
+      <input [autocomplete]="'off'" #receiptinput="ngModel" [(ngModel)]="formattedReceipt" id="receipt-input" class="form-control text-center rounded-start" type="text" autocomplete="receipt" name="receipt" maxlength="19" size="19" customReceiptValidator>
+      <button [disabled]="formattedReceipt.length < 16 || authenticationService.loginInProgress || !receiptinput.errors?.['receiptvalidator']" (click)="viewReport()" id="ReceiptButton" class="btn btn-primary" type="submit">
+        <span>
+          {{'Log in'|translate}}
+        </span>
+      </button>
+    </div>
+  </div>
+</form>
+@if (appDataService.errorCodes.code === 9) {
+  <div class="login-error-box-homepage text-danger">
+    {{'The access code is either invalid or the report has expired.'|translate}}
+  </div>
+}

@@ -1,0 +1,62 @@
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/inter-all-400-normal.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/inter-all-700-normal.woff") format("woff");
+}
+
+* {
+  font-family: "Inter", sans-serif;
+  --font-stack: "Inter", sans-serif;
+  --font-stack--headings: "Inter", sans-serif;
+}
+
+.highlight {
+  background-color: #EEF5FC;
+}
+
+.introduction-banner {
+  display: table;
+  margin: 1em auto;
+  font-size: 0.5rem;
+  text-align: center;
+}
+
+.donation-banner {
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+  z-index: 1000;
+}
+
+.donation-banner a {
+  font-weight: bold;
+}
+
+.donation-icon {
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+img.align-center {
+  margin-bottom: 1rem;
+}
+
+@media not print {
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+    --color-code-background: #1D1F24;
+    --color-code-foreground: #F5F7FA;
+  }
+}

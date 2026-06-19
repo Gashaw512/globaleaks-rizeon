@@ -1,0 +1,28 @@
+#pdf-viewer {
+  display: none;
+  height: 100%;
+  position: relative;
+  padding: 20px 0;
+}
+
+#pdf-viewer #pdf-controls {
+  position: fixed;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  top: 0;
+  background: #f5f7fa;
+  font-size: 18px;
+}
+
+#media-viewer {
+  display: none;
+}
+
+#media-viewer img,
+#media-viewer video,
+#pdf-viewer canvas {
+  width: 100%;
+}

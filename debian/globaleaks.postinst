@@ -1,0 +1,26 @@
+#!/bin/sh
+# This is the post installation script for globaleaks
+set -e
+
+# Create globaleaks user and add the user to required groups
+if ! id -u globaleaks >/dev/null 2>&1; then
+  adduser --quiet \
+          --system \
+          --group \
+          --disabled-login \
+          --disabled-password \
+          --home /var/globaleaks \
+          --shell /bin/false \
+          globaleaks
+fi
+
+if [ -L "/var/globaleaks" ]; then
+    echo "Error: /var/globaleaks is a symbolic link; refusing to proceed." >&2
+    exit 1
+fi
+
+mkdir -p /var/globaleaks
+chown globaleaks:globaleaks /var/globaleaks
+chmod 700 /var/globaleaks
+
+#DEBHELPER#

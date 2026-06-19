@@ -1,0 +1,23 @@
+<div class="reveal">
+  <ul class="nav nav-tabs" role="tablist">
+    <li id="tab1" class="nav-item" role="presentation">
+      <button class="nav-link" [class.active]="activeTab === 'tab1'" (click)="activeTab = 'tab1'" type="button" role="tab" [attr.aria-selected]="activeTab === 'tab1'" aria-controls="preferences-panel">{{ 'Preferences' | translate }}</button>
+    </li>
+    <li id="tab2" class="nav-item" role="presentation">
+      <button class="nav-link password" [class.active]="activeTab === 'tab2'" (click)="activeTab = 'tab2'" type="button" role="tab" [attr.aria-selected]="activeTab === 'tab2'" aria-controls="password-panel">{{ 'Password' | translate }}</button>
+    </li>
+  </ul>
+  <br>
+    <div>
+      <div id="preferences-panel" role="tabpanel" [class.d-none]="activeTab !== 'tab1'" aria-labelledby="preferences-tab">
+        @if (activeTab === 'tab1') {
+          <src-preference-tab1></src-preference-tab1>
+        }
+      </div>
+      <div id="password-panel" role="tabpanel" [class.d-none]="activeTab !== 'tab2'" aria-labelledby="password-tab">
+        @if (activeTab === 'tab2') {
+          <src-preference-tab2></src-preference-tab2>
+        }
+      </div>
+    </div>
+  </div>

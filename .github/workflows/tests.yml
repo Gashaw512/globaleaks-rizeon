@@ -1,0 +1,53 @@
+name: Tests
+
+on: [ push, pull_request ]
+
+# Declare default permissions as read only.
+permissions: read-all
+
+env:
+  CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+
+jobs:
+  run_tests:
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - name: Cache npm dependencies
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('client/npm-shrinkwrap.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Cache pip dependencies
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install git
+        run: |
+          sudo apt update -q
+          sudo apt install -y git
+
+      - name: Run tests
+        run: |
+          cd $GITHUB_WORKSPACE
+          ./.github/workflows/scripts/run_tests.sh
+
+      - name: Upload coverage to Codacy
+        uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: backend/lcov.info,client/cypress/coverage/lcov.info
+          force-coverage-parser: lcov

@@ -1,0 +1,326 @@
+<form name="wizardForm" novalidate>
+  @if (step === 1) {
+    <div ngForm class="clearfix">
+      <div class="row wizard-block">
+        <div class="col-md-12 text-center py-4">
+          <h2 class="title fw-bold text-dark">Wegagen Speak-Up Portal Setup Wizard</h2>
+          <p class="lead text-muted mt-3">
+            The following secure administrative process will guide you through initializing and configuring the bank's operational environment.
+          </p>
+        </div>
+      </div>
+      <br>
+      <div class="pager float-start">
+        <button class="ButtonNext btn btn-primary px-4 py-2" (click)="step = 2">
+          <span>Get Started</span>
+          <i class="fas fa-circle-arrow-right ms-2"></i>
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (step === 2) {
+    <div ngForm #wizardFormStep2="ngForm" [ngClass]="{'was-validated': validation.step2}" class="clearfix">
+      <div class="row wizard-block">
+        <div class="col-md-12 mb-4">
+          <h4 class="fw-semibold text-dark">System Configuration Parameters</h4>
+          <p class="text-muted small">Specify the deployment descriptor title for this local instance.</p>
+        </div>
+        <div class="col-md-8">
+          <div class="row form-group align-items-center">
+            <label class="col-md-4 fw-medium" for="node_name">
+              <span>Platform Identifier</span>
+              <span class="text-danger" ngbTooltip="{{'This field is mandatory' | translate}}">*</span>
+            </label>
+            <div class="col-md-8">
+              <input id="node_name" name="node_name" class="form-control" [(ngModel)]="wizard.node_name" placeholder="e.g., Wegagen Speak-Up Platform" type="text" required>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="pager float-start">
+        <button class="ButtonPrevious btn btn-secondary me-2" (click)="step = 1">
+          <i class="fas fa-circle-arrow-left me-2"></i>
+          <span>Previous</span>
+        </button>
+        <button class="ButtonNext btn btn-primary" (click)="(validation.step2=true) && !wizardFormStep2.invalid && (step = 4)">
+          <span>Next</span>
+          <i class="fas fa-circle-arrow-right ms-2"></i>
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (step === 3) {
+    <div ngForm #wizardFormStep3="ngForm" [ngClass]="{'was-validated': validation.step3}" class="clearfix">
+      <div class="row wizard-block">
+        <div class="title">Choose a system deployment schema:</div>
+        <div class="col-md-6">
+          <src-profile></src-profile>
+        </div>
+      </div>
+      <br>
+      <div class="pager float-start">
+        <button class="ButtonPrevious btn btn-secondary me-2" (click)="step = 2">
+          <i class="fas fa-circle-arrow-left me-2"></i>
+          <span>Previous</span>
+        </button>
+        <button class="ButtonNext btn btn-primary" (click)="(validation.step3=true) && !wizardFormStep3.invalid && (step = 5)">
+          <span>Next</span>
+          <i class="fas fa-circle-arrow-right ms-2"></i>
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (step === 4) {
+    <div ngForm #wizardFormStep4="ngForm" [ngClass]="{'was-validated': validation.step4}" class="clearfix">
+      <div class="row wizard-block">
+        <div class="col-md-12 mb-4">
+          <h4 class="title fw-bold text-dark">Platform Administrator Provisioning</h4>
+          <p class="text-muted small">Configure the root administrative officer credentials.</p>
+        </div>
+        <div class="col-md-6">
+          <div class="row form-group">
+            <label class="col-md-4" for="admin_username">
+              <span>Admin Username</span>
+              <span class="text-danger" ngbTooltip="{{'This field is mandatory' | translate}}">*</span>
+            </label>
+            <div class="col-md-8">
+              <input id="admin_username" name="admin_username" class="form-control" [(ngModel)]="wizard.admin_username" type="text" placeholder="Username" autocomplete="off" required>
+            </div>
+          </div>
+          <div class="row form-group">
+            <label class="col-md-4" for="admin_name">
+              <span>Full Name</span>
+              <span class="text-danger" ngbTooltip="{{'This field is mandatory' | translate}}">*</span>
+            </label>
+            <div class="col-md-8">
+              <input id="admin_name" name="admin_name" class="form-control" [(ngModel)]="wizard.admin_name" type="text" placeholder="Official Corporate Name" required>
+            </div>
+          </div>
+          <div class="row form-group">
+            <label class="col-md-4" for="admin_mail_address">
+              <span>Corporate Email</span>
+              <span class="text-danger" ngbTooltip="{{'This field is mandatory' | translate}}">*</span>
+            </label>
+            <div class="col-md-8">
+              <input id="admin_mail_address" name="admin_mail_address" class="form-control" #admin_email="ngModel" [(ngModel)]="wizard.admin_mail_address" placeholder="email@wegagenbanksc.com.et" [pattern]="emailRegexp" type="text" [ngClass]="{'is-invalid': wizardFormStep4.valid && (admin_email?.errors?.['required'] || wizardFormStep4?.errors?.['pattern'])}" required>
+              @if (admin_email?.errors?.['pattern']) {
+                <div class="text-danger small mt-1">Invalid enterprise email context format.</div>
+              }
+            </div>
+          </div>
+          <div class="row form-group">
+            <label class="col-md-4" for="admin_password">
+              <span>Master Password</span>
+              <span class="text-danger" ngbTooltip="{{'This field is mandatory' | translate}}">*</span>
+            </label>
+            <div class="col-md-8">
+              <input id="admin_password" name="admin_password" #password_admin="ngModel" class="form-control" [(ngModel)]="admin_password" type="password" placeholder="Password" autocomplete="off" [ngClass]="{'is-invalid': wizardFormStep4.valid && (password_admin?.errors?.['required'] || (password_admin.errors?.['passwordStrengthValidator']))}" (passwordStrengthChange)="onPasswordStrengthChange($event)" required passwordStrengthValidator />
+              @if (password_score > 0) {
+                <src-password-meter [passwordStrengthScore]='password_score'></src-password-meter>
+              }
+              @if (!password_admin?.errors?.['required'] && password_admin.errors?.['passwordStrengthValidator']) {
+                <div class="text-danger small mt-1">
+                  Password requirement failure. Must be $\ge$ 12 characters and contain uppercase, lowercase, numeric, and special symbols.
+                </div>
+              }
+            </div>
+          </div>
+          <div class="row form-group">
+            <label class="col-md-4" for="admin_password_check">
+              <span>Confirm Password</span>
+              <span class="text-danger" ngbTooltip="{{'This field is mandatory' | translate}}">*</span>
+            </label>
+            <div class="col-md-8">
+              <input id="admin_password_check" name="admin_password_check" class="form-control" [(ngModel)]="admin_check_password" type="password" placeholder="Re-enter Password" autocomplete="off" [ngClass]="{'is-invalid': wizardFormStep4.valid && (!password_admin.errors?.['passwordStrengthValidator'] && admin_password && (admin_password !== admin_check_password))}" required />
+              @if (wizardFormStep4.valid && (!password_admin.errors?.['passwordStrengthValidator'] && admin_password && (admin_password !== admin_check_password))) {
+                <div class="text-danger small mt-1">The administrative authentication passwords do not match.</div>
+              }
+            </div>
+          </div>
+          <div class="row form-group mt-3">
+            <div class="col-md-12">
+              <div class="form-check">
+                <input id="admin_escrow_checkbox" class="admin-escrow form-check-input" type="checkbox" name="wizard.admin_escrow" [(ngModel)]="wizard.admin_escrow">
+                <label class="form-check-label fw-semibold" for="admin_escrow_checkbox">Enable administrative password recovery escrow protection.</label>
+              </div>
+              <div class="text-muted small mt-1">
+                Recommended for banking systems to prevent cryptographic asset isolation if an investigator profile loses access credentials.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="pager float-start">
+        <button class="ButtonPrevious btn btn-secondary me-2" (click)="step = 2">
+          <i class="fas fa-circle-arrow-left me-2"></i>
+          <span>Previous</span>
+        </button>
+        <button class="ButtonNext btn btn-primary" (click)="(validation.step4=true) && !(wizardFormStep4.invalid || (admin_password !== admin_check_password)) && (step = 5)">
+          <span>Next</span>
+          <i class="fas fa-circle-arrow-right ms-2"></i>
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (step === 5) {
+    <div ngForm #wizardFormStep5="ngForm" [ngClass]="{'was-validated': validation.step5}" class="clearfix">
+      <div class="row wizard-block">
+        <div class="col-md-12 mb-4">
+          <h4 class="title fw-bold text-dark">Primary Recipient / Audit Officer Token</h4>
+          <p class="text-muted small">Establish the operational account that receives incoming whistleblower reports.</p>
+        </div>
+        <div class="col-md-6">
+          @if (!wizard.skip_recipient_account_creation) {
+            <div>
+              <div class="row form-group">
+                <label class="col-md-4" for="receiver_username">
+                  <span>Recipient Username</span>
+                  <span class="text-danger" ngbTooltip="{{'This field is mandatory' | translate}}">*</span>
+                </label>
+                <div class="col-md-8">
+                  <input id="receiver_username" name="receiver_username" class="form-control" [(ngModel)]="wizard.receiver_username" autocomplete="off" type="text" placeholder="Username" [ngClass]="{'is-invalid': recipientDuplicate}" required>
+                  @if (wizard.receiver_username === wizard.admin_username) {
+                    <div class="text-danger small mt-1">Security collision error: Recipient username must be different from Admin.</div>
+                  }
+                </div>
+              </div>
+              <div class="row form-group">
+                <label class="col-md-4" for="receiver_name">
+                  <span>Full Name</span>
+                  <span class="text-danger" ngbTooltip="{{'This field is mandatory' | translate}}">*</span>
+                </label>
+                <div class="col-md-8">
+                  <input id="receiver_name" name="receiver_name" class="form-control" [(ngModel)]="wizard.receiver_name" type="text" placeholder="Investigator Name" [disabled]="wizard.skip_recipient_account_creation" required>
+                </div>
+              </div>
+              <div class="row form-group">
+                <label class="col-md-4" for="receiver_mail_address">
+                  <span>Audit Email</span>
+                  <span class="text-danger" ngbTooltip="{{'This field is mandatory' | translate}}">*</span>
+                </label>
+                <div class="col-md-8">
+                  <input id="receiver_mail_address" name="receiver_mail_address" #receiver_email="ngModel" class="form-control" [(ngModel)]="wizard.receiver_mail_address" [pattern]="emailRegexp" type="text" placeholder="email@wegagenbanksc.com.et" [ngClass]="{'is-invalid': validation.step4 && wizardFormStep5.valid && receiver_email?.errors?.['required'] || receiver_email?.errors?.['pattern']}" [disabled]="wizard.skip_recipient_account_creation" required>
+                  @if (receiver_email?.errors?.['pattern']) {
+                    <div class="text-danger small mt-1">Invalid compliance mail system syntax pattern.</div>
+                  }
+                </div>
+              </div>
+              <div class="row form-group">
+                <label class="col-md-4" for="receiver_password">
+                  <span>Recipient Password</span>
+                  <span class="text-danger" ngbTooltip="{{'This field is mandatory' | translate}}">*</span>
+                </label>
+                <div class="col-md-8">
+                  <input id="receiver_password" name="receiver_password" class="form-control" [(ngModel)]="receiver_password" #password_receiver="ngModel" type="password" placeholder="Secure Password" autocomplete="off" [ngClass]="{'is-invalid': validation.step4 && wizardFormStep5.valid && (password_receiver?.errors?.['required'] || (password_receiver?.errors?.['passwordStrengthValidator']))}" (passwordStrengthChange)="onPasswordStrengthChange($event)" required passwordStrengthValidator />
+                  @if (password_score > 0) {
+                    <src-password-meter [passwordStrengthScore]='password_score'></src-password-meter>
+                  }
+                  @if (!password_receiver?.errors?.['required'] && password_receiver?.errors?.['passwordStrengthValidator']) {
+                    <div class="text-danger small mt-1">
+                      Password requirement failure. Must be $\ge$ 12 characters and contain uppercase, lowercase, numeric, and special symbols.
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="row form-group">
+                <label class="col-md-4" for="receiver_password_check">
+                  <span>Confirm Password</span>
+                  <span class="text-danger" ngbTooltip="{{'This field is mandatory' | translate}}">*</span>
+                </label>
+                <div class="col-md-8">
+                  <input id="receiver_password_check" name="receiver_password_check" class="form-control" [(ngModel)]="receiver_check_password" type="password" placeholder="Re-enter Password" autocomplete="off" [ngClass]="{'is-invalid': validation.step4 && (!password_receiver.errors?.['passwordStrengthValidator'] && receiver_password && (receiver_password !== receiver_check_password))}" required />
+                  @if (validation.step4 && (!password_receiver?.errors?.['passwordStrengthValidator'] && receiver_check_password.length > 0 && receiver_password && (receiver_password !== receiver_check_password))) {
+                    <div class="text-danger small mt-1">Recipient passwords do not match.</div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+          <div class="row form-group mt-3">
+            <div class="col-md-12">
+              <div class="form-check">
+                <input id="skip_recipient_account_creation_checkbox" name="skip_recipient_account_creation_checkbox" class="form-check-input" type="checkbox" [(ngModel)]="wizard.skip_recipient_account_creation">
+                <label class="form-check-label fw-semibold" for="skip_recipient_account_creation_checkbox">Bypass automated recipient initialization profile.</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="pager float-start">
+        <button class="ButtonPrevious btn btn-secondary me-2" (click)="step = 4">
+          <i class="fas fa-circle-arrow-left me-2"></i>
+          <span>Previous</span>
+        </button>
+        <button class="ButtonNext btn btn-primary" (click)="(validation.step5 = true) && (wizard.skip_recipient_account_creation || (!wizardFormStep5.invalid && wizard.receiver_username !== wizard.admin_username && receiver_password === receiver_check_password)) && (step = 6)">
+          <span>Next</span>
+          <i class="fas fa-circle-arrow-right ms-2"></i>
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (step === 6) {
+    <div ngForm #wizardFormStep6="ngForm" [ngClass]="{'was-validated': validation.step6}" class="clearfix">
+      <div class="row wizard-block">
+        <div class="col-md-12">
+          <div class="form-group">
+            <div class="title fw-bold text-dark mb-2">Legal Terms & Software License Evaluation</div>
+            <div class="tos-text p-3 border rounded bg-light mb-3" style="max-height: 250px; overflow-y: scroll;" tabindex="0" role="region" [attr.aria-label]="'License' | translate">{{license}}</div>
+            <div class="form-check">
+              <input id="tos_agreement_checkbox" name="tos_agreement_checkbox" class="tos-agreement-input form-check-input" type="checkbox" [(ngModel)]="tosAccept" required>
+              <label class="tos-agreement-label form-check-label fw-medium" [ngClass]="{'text-danger': validation.step6 && wizardFormStep6.invalid}" for="tos_agreement_checkbox">
+                I have read and verify compliance with the architectural operations and software licensing terms.
+              </label>
+            </div>
+            @if (appDataService.public.node.root_tenant) {
+              <div class="form-check mt-3">
+                <input id="enable_developers_exception_notification_checkbox" class="form-check-input" name="wizard.enable_developers_exception_notification_checkbox" [(ngModel)]="wizard.enable_developers_exception_notification" type="checkbox">
+                <label class="form-check-label fw-semibold" for="enable_developers_exception_notification_checkbox">Transmit telemetry exception reports to software maintainers.</label>
+                <div class="text-muted small">Helps map internal error structures dynamically to maximize infrastructure stability.</div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="pager float-start">
+        <button class="ButtonPrevious btn btn-secondary me-2" (click)="step = 5">
+          <i class="fas fa-circle-arrow-left me-2"></i>
+          <span>Previous</span>
+        </button>
+        <button class="ButtonNext btn btn-primary" (click)="(validation.step6 = true) && !wizardFormStep6.invalid && complete()">
+          <span>Finalize Configurations</span>
+          <i class="fas fa-circle-arrow-right ms-2"></i>
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (step === 7) {
+    <div class="clearfix">
+      <div class="row wizard-block">
+        <div class="col-md-10 text-center py-4">
+          <div class="congratulations">
+            <h2 class="title text-success fw-bold" role="alert">Configuration Successful!</h2>
+            <p class="lead text-muted mt-3">
+              The Wegagen Speak-Up Portal cryptographic node setup parameter pipeline has been compiled and saved locally.
+            </p>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="pager float-start">
+        <button name="proceed" id="proceed" class="ButtonNext btn btn-success btn-lg px-5 py-3 fw-bold" (click)="goToAdminInterface()" type="submit">
+          <span>Proceed to Security Cockpit</span>
+        </button>
+      </div>
+    </div>
+  }
+</form>

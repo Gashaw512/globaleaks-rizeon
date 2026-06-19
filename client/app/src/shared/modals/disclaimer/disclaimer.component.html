@@ -1,0 +1,31 @@
+<div class="modal-header justify-content-end">
+  <button type="button" class="btn-close" (click)="cancel()" [attr.aria-label]="'Close' | translate">
+    <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+  </button>
+</div>
+
+<div class="modal-body">
+  <h4 class="text-center mb-2">
+    Wegagen Speak-Up Platform
+  </h4>
+
+  <p class="text-center text-muted mb-3">
+    Confidential Reporting & Whistleblowing Portal
+  </p>
+
+  <div tabindex="0" role="region" [attr.aria-label]="'Disclaimer' | translate">
+    <markdown class="disclaimer-text"
+              [data]="appDataService.public.node.disclaimer_text | stripHtml">
+    </markdown>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button (click)="confirm()" id="modal-action-ok" class="btn btn-primary" type="submit">
+    {{ 'I Agree & Continue' | translate }}
+  </button>
+
+  <button id="modal-action-cancel" class="btn btn-outline-secondary" (click)="cancel()">
+    {{ 'Exit' | translate }}
+  </button>
+</div>

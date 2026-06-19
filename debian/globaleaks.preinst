@@ -1,0 +1,13 @@
+#!/bin/sh
+# This is the pre installation script for globaleaks
+set -e
+
+#DEBHELPER#
+
+# Disable the system tor service; GlobaLeaks manages its own tor instance
+systemctl disable tor 2>/dev/null || true
+systemctl stop tor 2>/dev/null || true
+
+if [ "$1" = "upgrade" ]; then
+  service globaleaks stop || true
+fi

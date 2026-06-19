@@ -1,0 +1,110 @@
+describe("Recipient first login", () => {
+  it("should require password change upon successful authentication", () => {
+    cy.login_receiver("Recipient", Cypress.env("init_password"), "#/login", true);
+    cy.get('input[name="changePasswordArgs.password"]').should('be.visible');
+    cy.takeScreenshot("user/password_change_on_first_login");
+    cy.get('input[name="changePasswordArgs.password"]').should('be.visible').clear().type(Cypress.env("user_password"));
+    cy.get('input[name="changePasswordArgs.confirm"]').should('be.visible').clear().type(Cypress.env("user_password"));
+    cy.get('button[name="submit"]').click();
+    cy.waitForUrl("/recipient/home");
+    cy.visit("/#/recipient/preferences");
+    cy.takeScreenshot("user/preferences");
+    cy.get('#tab2').click();
+    cy.takeScreenshot("user/password_change");
+    cy.get("#SupportLink").click();
+    cy.get("#support-request-email").clear();
+    cy.takeScreenshot("user/modal_support", ".modal-dialog");
+    cy.get(".modal #modal-action-cancel").click();
+    cy.logout();
+  });
+
+  it("should be able to login with the new password", () => {
+    cy.login_receiver();
+    cy.logout();
+  });
+
+  it("should be able to retrieve the account recovery key", () => {
+    cy.login_receiver("Recipient", Cypress.env("user_password"), "#/login", true);
+    cy.waitForUrl("/recipient");
+    cy.visit("/#/recipient/preferences");
+    cy.takeScreenshot("user/preferences");
+    cy.get( "#account_recovery_key").click();
+    cy.get("[name='secret']").type(Cypress.env("user_password"));
+    cy.get("#confirm").click();
+    cy.get('#AccountRecoveryKey').should('be.visible');
+    cy.takeScreenshot("user/recoverykey", ".modal-dialog");
+    cy.get("#close").click();
+    cy.logout()
+  });
+
+  it("should be able to enable two factor authentication", () => {
+    cy.login_receiver("Recipient", Cypress.env("user_password"), "#/login", true);
+    cy.waitForUrl("/recipient");
+    cy.visit("/#/recipient/preferences");
+    cy.get("[name='two_factor']").click();
+    cy.wait(1000);
+    cy.takeScreenshot("user/2fa", ".modal-dialog");
+    cy.get("#close").click();
+    cy.logout();
+  });
+});
+
+describe("Recipient2 first login", () => {
+  it("should require password change upon successful authentication", () => {
+    const password = Cypress.env("init_password") + "abc";
+    cy.login_receiver("Recipient2", Cypress.env("init_password"), "#/login", true);
+    cy.get('input[name="changePasswordArgs.password"]').should('be.visible').clear().type(password);
+    cy.get('input[name="changePasswordArgs.confirm"]').should('be.visible').clear().type(password);
+    cy.get('button[name="submit"]').click();
+    cy.logout();
+  });
+});
+
+describe("Recipient2 voluntary password change", () => {
+  it("should perform voluntary password change", () => {
+    const password = Cypress.env("init_password") + "abc";
+    cy.login_receiver("Recipient2", password, "#/login", false);
+    cy.get("#PreferencesLink").click();
+    cy.get(".password").click();
+    cy.get('input[name="changePasswordArgs.password"]').should('be.visible').clear().type(Cypress.env("user_password")).should('have.value', Cypress.env("user_password"));
+    cy.get('input[name="changePasswordArgs.confirm"]').should('be.visible').clear().type(Cypress.env("user_password")).should('have.value', Cypress.env("user_password"));
+    cy.get('button[name="submit"]').should('be.enabled').click();
+    cy.get("[name='secret']").should('be.visible').clear().type(Cypress.env("user_password"));
+    cy.get("#confirm").click();
+    cy.logout();
+  });
+});
+
+describe("Custodian first login", () => {
+  it("should require password change upon successful authentication", () => {
+    cy.login_custodian("Custodian", Cypress.env("init_password"), "#/login", true);
+    cy.get('input[name="changePasswordArgs.password"]').should('be.visible').clear().type(Cypress.env("user_password"));
+    cy.get('input[name="changePasswordArgs.confirm"]').should('be.visible').clear().type(Cypress.env("user_password"));
+    cy.get('button[name="submit"]').click();
+    cy.url().should("include", "/custodian/home");
+    cy.logout();
+  });
+});
+
+describe("Admin2 first login", () => {
+  it("should require password change upon successful authentication", () => {
+    cy.login_custodian("Admin2", Cypress.env("init_password"), "#/login", true);
+    cy.get('input[name="changePasswordArgs.password"]').should('be.visible').clear().type(Cypress.env("user_password"));
+    cy.get('input[name="changePasswordArgs.confirm"]').should('be.visible').clear().type(Cypress.env("user_password"));
+    cy.get('button[name="submit"]').click();
+    cy.url().should("include", "/admin/home");
+    cy.logout();
+  });
+});
+
+describe("Analyst first login", () => {
+  it("should require password change upon successful authentication", () => {
+    cy.login_analyst("Analyst", Cypress.env("init_password"), "#/login", true);
+    cy.get('input[name="changePasswordArgs.password"]').should('be.visible').clear().type(Cypress.env("user_password"));
+    cy.get('input[name="changePasswordArgs.confirm"]').should('be.visible').clear().type(Cypress.env("user_password"));
+    cy.get('button[name="submit"]').click();
+    cy.url().should("include", "/analyst/home");
+    cy.logout();
+  });
+});
+

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "node": {
+    "whistleblowing_button": {
+      "en": "Submit a report"
+    },
+    "contexts_clarification": {
+      "en": "Select a reporting channel:"
+    }
+  },
+  "templates" : {}
+}
