@@ -262,36 +262,106 @@ export class SubmissionComponent implements OnInit {
     return this.validate[this.navigation];
   }
 
-  completeSubmission() {
-    this.receivedData = this.submission.getSharedData();
-    if (this.receivedData !== null && this.receivedData !== undefined && this.receivedData.length > 0) {
-       this.receivedData.forEach((item: Flow)=> {
-        item.upload();
-       });
-    }
+ completeSubmission() {
 
-   this.fieldUtilitiesService.onAnswersUpdate(this);
+  this.receivedData = this.submission.getSharedData();
 
-    if (!this.runValidation()) {
-      this.utilsService.scrollToTop();
+  if (
+    this.receivedData !== null &&
+    this.receivedData !== undefined &&
+    this.receivedData.length > 0
+  ) {
+    this.receivedData.forEach((item: Flow) => {
+      item.upload();
+    });
+  }
+
+
+  this.fieldUtilitiesService.onAnswersUpdate(this);
+
+
+  if (!this.runValidation()) {
+    this.utilsService.scrollToTop();
+    return;
+  }
+
+
+this.submission.submission.answers = this.answers;
+
+
+// FIX: ensure score exists in submission payload
+(this.submission.submission as any).score =
+    this.calculateSubmissionScore();
+
+
+this.utilsService.resumeFileUploads(this.uploads);
+
+this.done = true;
+
+
+  const intervalId = setInterval(() => {
+
+    if (this.uploading()) {
       return;
     }
 
-    this.submission.submission.answers = this.answers;
 
-    this.utilsService.resumeFileUploads(this.uploads);
-    this.done = true;
+    clearInterval(intervalId);
 
-    const intervalId = setInterval(() => {
-      if (this.uploading()) {
-        return;
+    void this.finalizeSubmission();
+
+
+  }, 1000);
+}
+
+
+private calculateSubmissionScore(): number {
+
+  let totalScore = 0;
+
+
+  if (!this.answers) {
+    return totalScore;
+  }
+
+
+  Object.values(this.answers).forEach((items: any) => {
+
+
+    if (!Array.isArray(items)) {
+      return;
+    }
+
+
+    items.forEach((answer: any) => {
+
+
+      if (answer?.score_points) {
+
+        totalScore += Number(
+          answer.score_points
+        );
+
       }
 
-      clearInterval(intervalId);
 
-      void this.finalizeSubmission();
-    }, 1000);
-  }
+      if (answer?.score) {
+
+        totalScore += Number(
+          answer.score
+        );
+
+      }
+
+
+    });
+
+
+  });
+
+
+  return totalScore;
+}
 
   private async finalizeSubmission() {
     const receipt = this.cryptoService.generateReceipt();
