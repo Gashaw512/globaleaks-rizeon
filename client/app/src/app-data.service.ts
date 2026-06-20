@@ -10,8 +10,8 @@ export class AppDataService {
   language = "en";
   errorCodes = new ErrorCodes();
   
-  // Custom fixed application branding variables
-  pageTitle = "Wegagen Speak-Up Platform";
+ // Custom fixed application branding variables
+  pageTitle = "Confidential Reporting System";
   projectTitle = "Wegagen Speak-Up Platform";
   header_title = "Wegagen Speak-Up Platform";
   

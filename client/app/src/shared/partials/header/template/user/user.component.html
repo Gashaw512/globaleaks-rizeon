@@ -42,7 +42,7 @@
         }
       }
       <span id="LogoutLinkBox">
-        <a id="LogoutLink" href="" (click)="onLogout($event)" ngbTooltip="{{'Logout' | translate}}" [attr.aria-label]="'Logout' | translate">
+        <a id="LogoutLink" style="cursor: pointer;" (click)="onLogout($event)" ngbTooltip="{{'Logout' | translate}}" [attr.aria-label]="'Logout' | translate">
           <i class="pointer fas fa-right-from-bracket"></i>
           @if (authentication.session.role === 'whistleblower') {
             <span>

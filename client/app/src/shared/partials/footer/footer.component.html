@@ -1,4 +1,7 @@
-<footer id="FooterBox" class="bg-dark text-white-50 py-3 mt-auto border-top border-secondary small">
+<footer id="FooterBox" 
+        style="background-color: #222222; color: #E0E0E0;" 
+        class="py-3 mt-auto border-top border-secondary small">
+  
   @if (node) {
     <div class="container-fluid px-3 d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
       
@@ -9,21 +12,27 @@
             <a [href]="node.footer_whistleblowing_policy" 
                target="_blank" 
                rel="noopener" 
-               class="text-white-50 text-decoration-none link-light transition-all">
-              <i class="fas fa-file-shield me-1"></i>{{ 'Whistleblowing Policy' | translate }}
+               style="color: #E0E0E0; transition: color 0.2s;"
+               onmouseover="this.style.color='#F58220'"
+               onmouseout="this.style.color='#E0E0E0'"
+               class="text-decoration-none fw-medium">
+              <i class="fas fa-file-shield me-1" style="color: #F58220;"></i>{{ 'Whistleblowing Policy' | translate }}
             </a>
           }
 
           @if (node.footer_whistleblowing_policy && node.footer_privacy_policy) {
-            <span class="text-secondary mx-1">•</span>
+            <span class="mx-1" style="color: #F58220; opacity: 0.6;">•</span>
           }
 
           @if (node.footer_privacy_policy) {
             <a [href]="node.footer_privacy_policy" 
                target="_blank" 
                rel="noopener" 
-               class="text-white-50 text-decoration-none link-light transition-all">
-              <i class="fas fa-user-lock me-1"></i>{{ 'Privacy Policy' | translate }}
+               style="color: #E0E0E0; transition: color 0.2s;"
+               onmouseover="this.style.color='#F58220'"
+               onmouseout="this.style.color='#E0E0E0'"
+               class="text-decoration-none fw-medium">
+              <i class="fas fa-user-lock me-1" style="color: #F58220;"></i>{{ 'Privacy Policy' | translate }}
             </a>
           }
 
@@ -32,12 +41,12 @@
 
       @if (node.footer) {
         <div id="CustomFooter" class="text-center font-monospace opacity-75">
-          <markdown [data]="node.footer | stripHtml" class="m-0 text-white-50"></markdown>
+          <markdown [data]="node.footer | stripHtml" style="color: #B0B0B0;" class="m-0"></markdown>
         </div>
       }
 
-      <div id="AttributionClause" class="text-end fw-medium" style="letter-spacing: 0.3px;">
-        <i class="fas fa-building-shield text-success me-1"></i> Secure Confidential Reporting · Wegagen Speak-Up Platform
+      <div id="AttributionClause" class="text-end fw-medium" style="letter-spacing: 0.3px; color: #E0E0E0;">
+        <i class="fas fa-building-shield me-1" style="color: #F58220;"></i> Secure Confidential Reporting · Wegagen Speak-Up Platform
       </div>
 
     </div>

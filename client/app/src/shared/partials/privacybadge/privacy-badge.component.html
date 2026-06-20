@@ -43,19 +43,28 @@
 
 
 @if (!appDataService.connection.tor) {
-  <div id="PrivacyBadge" class="bg-dark text-white p-2 mb-3 rounded shadow-sm" style="border-left: 4px solid #00c853; font-size: 0.85rem;">
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 px-1">
-      
-      <div id="PrivacyBadgeTextBox" class="flex-grow-1">
-        <span class="text-success fw-bold"><i class="fas fa-user-shield me-1"></i> Safe & Confidential:</span>
-        <span>Your identity is completely protected. This portal ensures your submission remains private.</span>
-        <span class="text-white-50 ms-2 font-monospace d-block d-lg-inline border-lg-start border-secondary ps-lg-2">/ ምስጢርዎ የተጠበቀ ነው፡ ማንነትዎ ሳይገለጽ መልዕክትዎን መላክ ይችላሉ።</span>
-      </div>
+  <div id="PrivacyBadge"
+       class="p-3 mb-3 rounded shadow-sm"
+       style="background-color: #FA921D !important; border-left: 5px solid #004360 !important; font-size: 0.9rem;">
 
-      <div>
-        <a class="btn btn-xs btn-outline-light py-0 px-2 fw-semibold" style="font-size: 0.75rem;" href="https://www.torproject.org/download/" target="_blank">
-          Maximize Privacy / ቶርን ያውርዱ
-        </a>
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+
+      <div id="PrivacyBadgeTextBox" class="flex-grow-1">
+
+       <span class="fw-bold d-block d-sm-inline mb-1 mb-sm-0" 
+      style="color: #004360 !important; font-size: 0.95rem;">
+  <i class="fas fa-user-secret me-1" style="color: #004360 !important;"></i>
+  <font color="#004360" style="color: #004360 !important;">Anonymous & Secure Reporting:</font>
+</span>
+
+        <span class="fw-medium" style="color: #22395B !important;">
+          This platform does not ask for your identity and does not track you. You can submit information safely and anonymously.
+        </span>
+
+        <span class="d-block mt-2 fw-medium" style="color: #22395B !important; font-size: 0.9rem; line-height: 1.4;">
+          ይህ መድረክ ማንነትዎን አይጠይቅም፤ ድርጊትዎን ወይም መረጃዎን አይከታተልም። መረጃዎን ሙሉ በሙሉ በምስጢር እና በደህንነት ማቅረብ ይችላሉ።
+        </span>
+
       </div>
 
     </div>

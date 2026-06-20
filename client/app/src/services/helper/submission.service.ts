@@ -88,7 +88,7 @@ export class SubmissionService {
     //   receipt: this.submission.receipt
     // };
 
-
+// only this works on production
     const _submission_data = {
       context_id: this.submission.context_id,
       receivers: this.submission.receivers,

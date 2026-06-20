@@ -74,11 +74,16 @@ export class UserComponent {
     });
   }
 
-  onLogout(event: Event) {
+onLogout(event: Event) {
     event.preventDefault();
     const promise = () => {
       this.appConfigService.reinit(false);
       this.appConfigService.onValidateInitialConfiguration();
+      
+      // Force Angular to navigate away from the destroyed whistleblower context
+      this.router.navigate(['/']).then(() => {
+        window.location.reload(); // Optional: Ensures clean state refresh
+      });
     };
 
     this.authentication.logout(promise);
