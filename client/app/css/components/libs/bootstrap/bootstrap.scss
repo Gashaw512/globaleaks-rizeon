@@ -1,47 +1,56 @@
-// Wegagen Bank Visual Identity Colors
-// Customized Plan for Internal Ethics & Whistleblowing Portal
+// =====================================================
+// Wegagen Bank Corporate Theme
+// Internal Ethics & Whistleblowing Portal
+// =====================================================
 
-// Core Brand Colors
-$wegagen-orange:  #F58220; // Primary Brand Color
-$wegagen-dark:    #222222; // Secondary / Dark Accents
-$wegagen-text:    #333333; // Standard Body Text
+// Brand Colors
+$wegagen-blue:         #004360;
+$wegagen-blue-light:   #0D569A;
+$wegagen-orange:       #FD690B;
+$wegagen-orange-light: #FA921D;
 
-// Standard Utility Colors
-$red:             #DE1B1B; // Danger / Error
-$amber:           #FFB300; // Warning (Adjusted from yellow for better web readability)
-$green:           #2E7D32; // Success (Swapped from GlobaLeaks Blue to standard Green)
+// Text Colors
+$wegagen-text:         #22395B;
+$wegagen-dark:         #1F2937;
 
-$white:           #FFFFFF;
+// Utility Colors
+$red:                  #DE1B1B;
+$amber:                #FFB300;
+$green:                #2E7D32;
+$white:                #FFFFFF;
 
-// Neutral Grays (Retained and optimized for light background)
-$gray-100:        #F5F7FA;
-$gray-200:        #EBEFF5;
-$gray-300:        #DDE3ED;
-$gray-400:        #C8D1E0;
-$gray-500:        #AFBACC;
-$gray-600:        #8E99AB;
-$gray-700:        #707A8A;
-$gray-800:        $wegagen-text; // Mapped to body text color
-$gray-900:        $wegagen-dark; // Mapped to primary secondary color
-$black:           #1D1F24;
+// Neutral Palette
+$gray-100:             #F9F9F9;
+$gray-200:             #F2F4F5;
+$gray-300:             #E0E0E0;
+$gray-400:             #C8D1E0;
+$gray-500:             #AFBACC;
+$gray-600:             #8E99AB;
+$gray-700:             #707A8A;
+$gray-800:             #22395B;
+$gray-900:             #1F2937;
+$black:                #111827;
 
-// Bootstrap System Color Mapping
-$indigo:          $wegagen-orange;
-$purple:          $red;
-$pink:            $red;
-$orange:          $wegagen-orange;
-$cyan:            $wegagen-orange;
-$teal:            $green;
+// Bootstrap Mapping
+$blue:                 $wegagen-blue;
+$indigo:               $wegagen-blue-light;
+$purple:               $wegagen-orange;
+$pink:                 $red;
+$orange:               $wegagen-orange;
+$cyan:                 $wegagen-blue-light;
+$teal:                 $green;
 
-// Theme Semantic Colors
-$primary:         $wegagen-orange; // Primary Buttons, active links, branding accents
-$secondary:       $wegagen-dark;   // Secondary structural elements
-$success:         $green;          // Success alerts, complete indicators (Corrected for Wegagen)
-$info:            $wegagen-orange; // Informational callouts
-$warning:         $amber;          // Warnings & Pending indicators
-$danger:          $red;            // System errors & critical failures
-$light:           $gray-100;
-$dark:            $wegagen-dark;
+// Semantic Colors
+$primary:              $wegagen-blue;
+$secondary:            $wegagen-orange;
 
-// Import Bootstrap
+$success:              $green;
+$info:                 $wegagen-blue-light;
+$warning:              $amber;
+$danger:               $red;
+
+$light:                $gray-100;
+$dark:                 $wegagen-dark;
+
+// Bootstrap
 @import "bootstrap/scss/bootstrap";

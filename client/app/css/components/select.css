@@ -9,26 +9,34 @@
   text-overflow: '';
   width: 100%;
   padding: 6px 10px;
-  border: 1px solid #ccc;
+
+  border: 1px solid #E0E0E0;
   border-radius: 5px;
-  background-color: #fff;
+
+  background-color: #FFFFFF;
+  color: #22395B;
+
   font-size: 16px;
-  color: #333;
 }
 
 .select-container::after {
   content: '\25BC';
   font-size: 16px;
-  color: #333;
+
+  color: #004360;
+
   position: absolute;
   top: 50%;
   right: 10px;
   transform: translateY(-50%);
+
   pointer-events: none;
 }
 
 .form-select-custom:focus {
   outline: none;
-  border-color: #66afe9;
-  box-shadow: 0 0 5px rgb(102 175 233 / 50%);
+
+  border-color: #FD690B;
+
+  box-shadow: 0 0 5px rgba(253, 105, 11, 0.3);
 }

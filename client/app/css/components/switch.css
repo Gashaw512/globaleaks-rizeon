@@ -1,14 +1,3 @@
-.switch-container .switch input:checked + .slider::before {
-  transform: translateX(13px);
-  background-color: white;
-  left: 3px;
-}
-
-input:disabled + .slider::before {
-  background-color: #ccc;
-  left: 1px;
-}
-
 .switch-container {
   display: flex;
   align-items: center;
@@ -17,8 +6,8 @@ input:disabled + .slider::before {
 .switch {
   position: relative;
   display: inline-block;
-  width: 2em;
-  height: 17px;
+  width: 36px;
+  height: 20px;
 }
 
 .switch input {
@@ -27,36 +16,55 @@ input:disabled + .slider::before {
 
 .slider {
   position: absolute;
-  cursor: pointer;
   inset: 0;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 17px;
+
+  cursor: pointer;
+
+  background: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  border-radius: 999px;
+
+  transition: all 0.2s ease;
 }
 
 .slider::before {
-  position: absolute;
   content: '';
-  height: 13px;
-  width: 13px;
-  left: 3px;
-  bottom: 1px;
-  background-color: white;
-  transition: 0.4s;
+
+  position: absolute;
+  left: 2px;
+  top: 2px;
+
+  width: 14px;
+  height: 14px;
+
+  background: #FFFFFF;
   border-radius: 50%;
+
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+
+  transition: all 0.2s ease;
 }
 
-input + .slider {
-  background-color: white;
-  border: 1px solid #ccc;
+.switch input:checked + .slider {
+  background: #004360;
+  border-color: #004360;
 }
 
-input:checked + .slider {
-  background-color: #2866a2;
-  border: 1px solid #2866a2;
+.switch input:checked + .slider::before {
+  transform: translateX(16px);
 }
 
-input:focus + .slider {
-  box-shadow: 0 0 1px #24598f;
-  border: 1px solid #2866a2;
+.switch input:focus + .slider {
+  border-color: #FD690B;
+  box-shadow: 0 0 0 3px rgba(253, 105, 11, 0.15);
+}
+
+.switch input:disabled + .slider {
+  background: #F9F9F9;
+  border-color: #E0E0E0;
+  cursor: not-allowed;
+}
+
+.switch input:disabled + .slider::before {
+  background: #9B9D9E;
 }

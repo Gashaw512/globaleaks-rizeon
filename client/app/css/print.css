@@ -1,11 +1,13 @@
 @media print {
+
   button,
   .svg-inline--fa {
-    color: #103253 !important;
-    fill: #103253 !important;
+    color: #004360 !important;
+    fill: #004360 !important;
   }
 
- .dropdown-menu.show {
-   display: none;
- }
+  .dropdown-menu.show {
+    display: none !important;
+  }
+
 }
