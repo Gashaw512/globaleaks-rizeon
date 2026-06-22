@@ -44,29 +44,36 @@
 
 @if (!appDataService.connection.tor) {
   <div id="PrivacyBadge"
-       class="p-3 mb-3 rounded shadow-sm"
-       style="background-color: #FA921D !important; border-left: 5px solid #004360 !important; font-size: 0.9rem;">
+       class="p-2 mb-2 rounded shadow-sm"
+       style="background-color: #FA921D !important; border-left: 4px solid #004360 !important; font-size: 0.88rem;">
 
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+    <div class="d-flex flex-wrap align-items-center gap-2">
 
-      <div id="PrivacyBadgeTextBox" class="flex-grow-1">
+      <div id="PrivacyBadgeTextBox" class="w-100">
+        
+        <!-- English Line -->
+        <div class="mb-1">
+          <span class="fw-bold" style="color: #004360 !important;">
+            <i class="fas fa-user-secret me-1"></i>Anonymous & Secure Reporting:
+          </span>
+          <span class="fw-medium" style="color: #22395B !important;">
+            No identity required. No tracking. Submit safely.
+          </span>
+        </div>
 
-       <span class="fw-bold d-block d-sm-inline mb-1 mb-sm-0" 
-      style="color: #004360 !important; font-size: 0.95rem;">
-  <i class="fas fa-user-secret me-1" style="color: #004360 !important;"></i>
-  <font color="#004360" style="color: #004360 !important;">Anonymous & Secure Reporting:</font>
-</span>
-
-        <span class="fw-medium" style="color: #22395B !important;">
-          This platform does not ask for your identity and does not track you. You can submit information safely and anonymously.
-        </span>
-
-        <span class="d-block mt-2 fw-medium" style="color: #22395B !important; font-size: 0.9rem; line-height: 1.4;">
-          ይህ መድረክ ማንነትዎን አይጠይቅም፤ ድርጊትዎን ወይም መረጃዎን አይከታተልም። መረጃዎን ሙሉ በሙሉ በምስጢር እና በደህንነት ማቅረብ ይችላሉ።
-        </span>
+        <!-- Amharic Line -->
+        <div>
+          <span class="fw-bold" style="color: #004360 !important;">
+            ምስጢራዊ እና አስተማማኝ የጥቆማ ማቅረቢያ፦
+          </span>
+          <span class="fw-medium" style="color: #22395B !important;">
+            ማንነት አይጠይቅም፤ አይከታተልም። በደህንነት ያቅርቡ።
+          </span>
+        </div>
 
       </div>
 
     </div>
   </div>
 }
+
