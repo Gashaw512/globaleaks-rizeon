@@ -618,5 +618,13 @@
   "This email is to remind you the presence of unread or updated reports.": "This email is to remind you the presence of unread or updated reports.",
   "Reminder about unread or updated reports": "Reminder about unread or updated reports",
   "Role: {Role}": "ሚና፡-{Role}",
-  "Password: {Password}": "የይለፍ ቃል፡-{Password}"
+  "Password: {Password}": "የይለፍ ቃል፡-{Password}",
+
+
+    "Anonymous & Secure Reporting":
+  "ምስጢራዊ እና አስተማማኝ የጥቆማ ማቅረቢያ",
+
+  "No identity required. No tracking. Submit safely.":
+  "ማንነት አይጠይቅም፤ አይከታተልም። በደህንነት ያቅርቡ።"
+  
 }

@@ -2116,3 +2116,23 @@ msgstr "Role: {Role}"
 
 msgid "Password: {Password}"
 msgstr "Password: {Password}"
+
+
+msgid "Speak Up With Confidence"
+msgstr "Speak Up With Confidence"
+
+
+msgid "A trusted channel to report concerns safely, confidentially, and responsibly."
+msgstr "A trusted channel to report concerns safely, confidentially, and responsibly."
+
+
+msgid "Protected"
+msgstr "Protected"
+
+
+msgid "Confidential"
+msgstr "Confidential"
+
+
+msgid "Integrity First"
+msgstr "Integrity First"

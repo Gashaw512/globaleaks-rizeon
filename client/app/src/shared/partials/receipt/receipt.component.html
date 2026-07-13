@@ -1,4 +1,4 @@
-
+<!-- 
 <div class="text-center mb-4">
   <div class="d-inline-flex align-items-center justify-content-center p-2 mb-2 rounded-circle"
        style="background-color: #F58220; color: #FFFFFF;">
@@ -36,4 +36,94 @@
   <div class="login-error-box-homepage text-danger">
     {{'The access code is either invalid or the report has expired.'|translate}}
   </div>
-}
+} -->
+
+
+
+<div class="report-access-card">
+
+  <div class="report-access-header">
+
+    <div class="report-access-icon">
+      <i class="fas fa-file-shield"></i>
+    </div>
+
+    <h5 class="report-access-title">
+      {{ 'Check Your Report Status' | translate }}
+    </h5>
+
+    <p class="report-access-subtitle">
+      {{ 'Enter your receipt code to securely access updates and communications related to your report.' | translate }}
+    </p>
+
+  </div>
+
+
+  <form id="WhistleblowerLoginForm"
+        autocomplete="off"
+        novalidate>
+
+    <label
+      id="WhistleblowerLoginQuestion"
+      class="report-label"
+      for="receipt-input">
+
+      {{ 'Receipt Code' | translate }}
+
+    </label>
+
+
+    <div class="input-group report-input-group">
+
+      <input
+        class="d-none"
+        type="password"
+        name="disable-autocomplete" />
+
+      <input
+        [autocomplete]="'off'"
+        #receiptinput="ngModel"
+        [(ngModel)]="formattedReceipt"
+        id="receipt-input"
+        class="form-control report-input"
+        type="text"
+        autocomplete="receipt"
+        name="receipt"
+        maxlength="19"
+        size="19"
+        customReceiptValidator
+        placeholder="{{ 'Enter receipt code' | translate }}"
+      />
+
+
+      <button
+        [disabled]="formattedReceipt.length < 16 ||
+                    authenticationService.loginInProgress ||
+                    !receiptinput.errors?.['receiptvalidator']"
+        (click)="viewReport()"
+        id="ReceiptButton"
+        class="btn report-button"
+        type="submit">
+
+       <i class="fas fa-search"></i>
+
+        {{ 'View Report' | translate }}
+
+      </button>
+
+    </div>
+
+  </form>
+
+
+  @if (appDataService.errorCodes.code === 9) {
+    <div class="report-error">
+
+      <i class="fas fa-circle-exclamation"></i>
+
+      {{ 'The access code is either invalid or the report has expired.' | translate }}
+
+    </div>
+  }
+
+</div>

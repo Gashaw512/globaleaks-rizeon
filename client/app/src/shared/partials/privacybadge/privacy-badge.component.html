@@ -41,39 +41,80 @@
   </div>
 } -->
 
-
 @if (!appDataService.connection.tor) {
-  <div id="PrivacyBadge"
-       class="p-2 mb-2 rounded shadow-sm"
-       style="background-color: #FA921D !important; border-left: 4px solid #004360 !important; font-size: 0.88rem;">
 
-    <div class="d-flex flex-wrap align-items-center gap-2">
+<div id="PrivacyBadge" class="privacy-banner">
 
-      <div id="PrivacyBadgeTextBox" class="w-100">
-        
-        <!-- English Line -->
-        <div class="mb-1">
-          <span class="fw-bold" style="color: #004360 !important;">
-            <i class="fas fa-user-secret me-1"></i>Anonymous & Secure Reporting:
-          </span>
-          <span class="fw-medium" style="color: #22395B !important;">
-            No identity required. No tracking. Submit safely.
-          </span>
-        </div>
 
-        <!-- Amharic Line -->
-        <div>
-          <span class="fw-bold" style="color: #004360 !important;">
-            ምስጢራዊ እና አስተማማኝ የጥቆማ ማቅረቢያ፦
-          </span>
-          <span class="fw-medium" style="color: #22395B !important;">
-            ማንነት አይጠይቅም፤ አይከታተልም። በደህንነት ያቅርቡ።
-          </span>
-        </div>
+  <div class="privacy-glow"></div>
+
+
+  <div class="privacy-inner">
+
+
+    <!-- Security Logo -->
+    <div class="privacy-icon-wrapper">
+
+      <div class="privacy-icon">
+
+        <i class="fas fa-shield-halved"></i>
 
       </div>
 
     </div>
-  </div>
-}
 
+
+
+    <!-- Content -->
+
+    <div class="privacy-content">
+
+
+      <div class="privacy-title">
+
+        {{ 'Speak Up With Confidence' | translate }}
+
+      </div>
+
+
+
+      <div class="privacy-message">
+
+        {{ 'A trusted channel to report concerns safely, confidentially, and responsibly.' | translate }}
+
+      </div>
+
+
+
+      <div class="privacy-points">
+
+
+        <span>
+          <i class="fas fa-lock"></i>
+          {{ 'Protected' | translate }}
+        </span>
+
+
+        <span>
+          <i class="fas fa-user-secret"></i>
+          {{ 'Confidential' | translate }}
+        </span>
+
+
+        <span>
+          <i class="fas fa-scale-balanced"></i>
+          {{ 'Integrity First' | translate }}
+        </span>
+
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+</div>
+
+}

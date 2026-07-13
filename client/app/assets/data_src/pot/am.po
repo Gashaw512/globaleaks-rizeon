@@ -2042,3 +2042,22 @@ msgstr "ሚና፡-{Role}"
 msgid "Password: {Password}"
 msgstr "የይለፍ ቃል፡-{Password}"
 
+
+msgid "Speak Up With Confidence"
+msgstr "በልበ ሙሉነት ጥቆማዎን ያቅርቡ"
+
+
+msgid "A trusted channel to report concerns safely, confidentially, and responsibly."
+msgstr "ማንኛውንም ስጋት ወይም ጉዳይ በደህንነት፣ በምስጢር እና በኃላፊነት ለማቅረብ የተዘጋጀ የታመነ መድረክ።"
+
+
+msgid "Protected"
+msgstr "ደህንነቱ የተጠበቀ"
+
+
+msgid "Confidential"
+msgstr "ምስጢራዊነቱ የተጠበቀ"
+
+
+msgid "Integrity First"
+msgstr "ታማኝነት ቅድሚያ"

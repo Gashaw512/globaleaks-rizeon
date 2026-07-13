@@ -404,7 +404,7 @@
   "Subdomain": "ንኡስጎራ",
   "Submissions disabled": "ማስረከቢያው ቦዝኗል",
   "Submit": "አስገባ ",
-  "Submit a report": "Submit a report",
+  "Submit a report": "ጥቆማ ያቅርቡ",
   "Subscribed": "Subscribed",
   "Subscribed later": "Subscribed later",
   "Subscription date": "Subscription date",
@@ -438,7 +438,7 @@
   "The platform supports the configuration of HTTPS through this interface.": "የመሳርያ ስርኣቱ በዚህ በይነገጽ አማካኝነት የኤችቲቲፒኤስ ውቅረትን ይደግፋል",
   "The provided recovery key is invalid.": "የተሰጠው መልሶ ማግኛ ቁልፍ ትክክል አይደለም፡፡",
   "The provided reset token is invalid or expired.": "የተሰጠው መልሶ ማስጀመርያ ተለዋጭ ስም ትክክል አይደለም ወይም ተቃጥሏል፡፡",
-  "The access code is either invalid or the report has expired.": "ደረሰኙ የተሳሳተ ነው ወይም ሪፖርቱ ተቃጥሏል፡፡",
+  "The access code is either invalid or the report has expiredd.": "ደረሰኙ የተሳሳተ ነው ወይም ሪፖርቱ ተቃጥሏል፡፡",
   "The specified input is not valid.": "የተገለጸው ግቤት ስህተት ነው፡፡",
   "The specified input is not valid:": "የተገለጸው ግቤት ስህተት አይደለም፡-",
   "The specified old password is not valid": "የተገለጸው አሮጌ የይለፍ ቃል ትክክል አይደለም",
@@ -497,7 +497,6 @@
   "Weak": "ደካማ",
   "Welcome!": "እንኳን ደህና መጡ！",
   "Reporting person": "መረጃ ሰጪ",
-  "Whistleblowing Policy": "Whistleblowing Policy",
   "Whistleblowing button": "የመረጃ መስጫ አዝራር",
   "Width": "ወርድ",
   "Yes": "አዎ",
@@ -628,5 +627,53 @@
   "This email is to remind you the presence of unread or updated reports.": "This email is to remind you the presence of unread or updated reports.",
   "Reminder about unread or updated reports": "Reminder about unread or updated reports",
   "Role: {Role}": "ሚና፡-{Role}",
-  "Password: {Password}": "የይለፍ ቃል፡-{Password}"
+  "Password: {Password}": "የይለፍ ቃል፡-{Password}",
+
+
+  
+  "Speak Up With Confidence":
+    "በልበ ሙሉነት ጥቆማዎን ያቅርቡ",
+
+  "A trusted channel to report concerns safely, confidentially, and responsibly.":
+    "ማንኛውንም ስጋት ወይም ጉዳይ በደህንነት፣ በምስጢር እና በኃላፊነት ለማቅረብ የተዘጋጀ የታመነ መድረክ።",
+
+  "Protected":
+    "ደህንነቱ የተጠበቀ",
+
+  "Confidential":
+    "ምስጢራዊነቱ የተጠበቀ",
+
+  "Integrity First":
+    "ታማኝነት ቅድሚያ",
+
+  
+  "Wegagen Speak-Up Platform":
+  "የወጋገን ስፒክ-አፕ የጥቆማ መድረክ",
+
+  "Secure · Confidential · Anonymous Reporting":
+  "ደህንነቱ የተጠበቀ · ምስጢራዊ · ማንነትን የማይገልጽ የጥቆማ ማቅረቢያ",
+
+
+
+
+  "Check Your Report Status": "የጥቆማዎን ሁኔታ ይመልከቱ",
+
+  "Enter your receipt code to securely access updates and communications related to your report.": "የጥቆማዎን ሂደት እና የተሰጡ ምላሾች ለማየት የደረሰኝ ቁጥርዎን ያስገቡ።",
+
+  "Receipt Code": "የደረሰኝ ቁጥር",
+
+  "Enter receipt code": "የደረሰኝ ቁጥርዎን ያስገቡ",
+
+  "View Report": "ጥቆማዎን ይመልከቱ",
+
+  "The access code is either invalid or the report has expired.": "የገባው የደረሰኝ ቁጥር ትክክል አይደለም ወይም የጥቆማው ጊዜ አልፏል።",
+
+
+  "Confidential Reporting Channel": "ምስጢራዊ የጥቆማ ማቅረቢያ መድረክ",
+
+  "Whistleblowing Policy": "የጥቆማ አቀራረብ ፖሊሲ",
+
+
+  "Wegagen Bank S.C. All Rights Reserved.": "© ወጋገን ባንክ አ.ማ. መብቱ በሕግ የተጠበቀ ነው።"
+
 }
