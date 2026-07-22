@@ -32,5 +32,5 @@ export class FooterComponent {
   /**
    * Optional: platform name for branding consistency
    */
-  readonly platformName = "Wegagen Speak-Up Platform";
+  readonly platformName = "Wegagen Fraud Report Platform";
 }

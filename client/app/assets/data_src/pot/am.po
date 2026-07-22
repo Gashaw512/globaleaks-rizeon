@@ -1,16 +1,16 @@
 # 
 # Translators:
-# Giovanni Pellerano <giovanni.pellerano@Wegagen Speak-Up.org>, 2020-2022
+# Giovanni Pellerano <giovanni.pellerano@Wegagen Fraud Report.org>, 2020-2022
 # Suzanne Ferguson, 2020
 # Suzanne Ferguson, 2020
 msgid ""
 msgstr ""
-"Project-Id-Version: Wegagen Speak-Up\n"
+"Project-Id-Version: Wegagen Fraud Report\n"
 "PO-Revision-Date: 2026-03-19 11:46+0000\n"
 "Last-Translator: Anonymous "
 "<anonymous@users.noreply.localizationlab.weblate.cloud>\n"
 "Language-Team: Amharic <https://localizationlab.weblate.cloud/projects/"
-"Wegagen Speak-Up/stable/am/>\n"
+"Wegagen Fraud Report/stable/am/>\n"
 "Language: am\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1787,7 +1787,7 @@ msgid ""
 msgstr "አገልጋዩ ላይ ተጨማሪ የዲስክ ቦታ ለመፍጠር ሙያዊ ድጋፍ\n\nለመጠየቅ አስቡ፡፡"
 
 msgid ""
-"Wegagen Speak-Up technology includes a server status checking component which will"
+"Wegagen Fraud Report technology includes a server status checking component which will"
 " alert you in case something requires your attention."
 msgstr "የግሎባልሊክስ ቴክኖሎጂ የእርሰዎን ትኩረት የሚፈልግ ጉዳይ ቢኖር የሚያነቃዎት\n\nየአገልጋይ ሁኔታ ማመልከቻ ምንዝር አለው፡፡"
 
@@ -2043,7 +2043,7 @@ msgid "Password: {Password}"
 msgstr "የይለፍ ቃል፡-{Password}"
 
 
-msgid "Speak Up With Confidence"
+msgid "Report With Confidence"
 msgstr "በልበ ሙሉነት ጥቆማዎን ያቅርቡ"
 
 

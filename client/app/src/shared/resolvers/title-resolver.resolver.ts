@@ -10,7 +10,7 @@ export class TitleResolver {
 
 
   resolve(route: ActivatedRouteSnapshot): void {
-    const title = route.data["title"] || "Wegagen Speak-Up Platform";
+    const title = route.data["title"] || "Wegagen Fraud Report Platform";
     this.titleService.setTitle(title);
   }
 }

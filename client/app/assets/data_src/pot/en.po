@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Wegagen Speak-Up\n"
+"Project-Id-Version: Wegagen Fraud Report\n"
 "Language-Team: English "
-"(http://www.transifex.com/otf/Wegagen Speak-Up/language/en/)\n"
+"(http://www.transifex.com/otf/Wegagen Fraud Report/language/en/)\n"
 "mime-version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1827,10 +1827,10 @@ msgstr ""
 "the server."
 
 msgid ""
-"Wegagen Speak-Up technology includes a server status checking component which "
+"Wegagen Fraud Report technology includes a server status checking component which "
 "will alert you in case something requires your attention."
 msgstr ""
-"Wegagen Speak-Up technology includes a server status checking component which "
+"Wegagen Fraud Report technology includes a server status checking component which "
 "will alert you in case something requires your attention."
 
 msgid ""
@@ -2118,8 +2118,8 @@ msgid "Password: {Password}"
 msgstr "Password: {Password}"
 
 
-msgid "Speak Up With Confidence"
-msgstr "Speak Up With Confidence"
+msgid "Report With Confidence"
+msgstr "Report With Confidence"
 
 
 msgid "A trusted channel to report concerns safely, confidentially, and responsibly."

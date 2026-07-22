@@ -12,8 +12,8 @@ export class AppDataService {
   
  // Custom fixed application branding variables
   pageTitle = "Confidential Reporting System";
-  projectTitle = "Wegagen Speak-Up Platform";
-  header_title = "Wegagen Speak-Up Platform";
+  projectTitle = "Wegagen Fraud Report Platform";
+  header_title = "Wegagen Fraud Report Platform";
   
   page = "blank";
   languages_enabled = new Map<string, LanguagesSupported>();
@@ -55,7 +55,7 @@ export class AppDataService {
   updatePublic(newPublic: Root) {
     if (newPublic && newPublic.node) {
       // 1. Force the dynamic title properties to match our selected brand
-      newPublic.node.name = "Wegagen Speak-Up Platform";
+      newPublic.node.name = "Wegagen Fraud Report Platform";
       
       // 2. Safely capture if administrative dashboard has overwritten the submission buttons
       if (!newPublic.node.whistleblowing_button) {
