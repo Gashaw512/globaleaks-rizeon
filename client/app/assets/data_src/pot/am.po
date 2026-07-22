@@ -5,12 +5,12 @@
 # Suzanne Ferguson, 2020
 msgid ""
 msgstr ""
-"Project-Id-Version: Wegagen Fraud Report\n"
+"Project-Id-Version: Wegagen Fraud Report Platform\n"
 "PO-Revision-Date: 2026-03-19 11:46+0000\n"
 "Last-Translator: Anonymous "
 "<anonymous@users.noreply.localizationlab.weblate.cloud>\n"
 "Language-Team: Amharic <https://localizationlab.weblate.cloud/projects/"
-"Wegagen Fraud Report/stable/am/>\n"
+"Wegagen Fraud Report Platform/stable/am/>\n"
 "Language: am\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2061,3 +2061,6 @@ msgstr "ምስጢራዊነቱ የተጠበቀ"
 
 msgid "Integrity First"
 msgstr "ታማኝነት ቅድሚያ"
+
+msgid "Wegagen Fraud Report Platform"
+msgstr "የወጋገን ጥቆማ መድረክ"
